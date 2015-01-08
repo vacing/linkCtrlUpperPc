@@ -1,4 +1,4 @@
-﻿package cn.vacing.mwGui;
+﻿package cn.vacing.mw.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

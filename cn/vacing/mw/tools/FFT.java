@@ -1,4 +1,5 @@
-package cn.vacing.perfomaceGui;
+package cn.vacing.mw.tools;
+
 
 /*************************************************************************
  * Compilation: javac FFT.java Execution: java FFT N Dependencies: Complex.java

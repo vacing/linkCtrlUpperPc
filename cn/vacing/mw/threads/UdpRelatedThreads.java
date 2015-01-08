@@ -1,11 +1,12 @@
-package cn.vacing.mwThreads;
+package cn.vacing.mw.threads;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import cn.vacing.mwEvents.DataConvert;
-import cn.vacing.mwUdp.UdpSocket;
-import cn.vacing.test.TestSpectrumDataGet;
+import cn.vacing.mw.exception.DataLenUnproperException;
+import cn.vacing.mw.tools.DataConvert;
+import cn.vacing.mw.udp.UdpSocket;
+import cn.vacing.mw.ztest.TestSpectrumDataGet;
 
 public class UdpRelatedThreads {
 	private UdpSocket udpSocket;	
@@ -52,18 +53,18 @@ public class UdpRelatedThreads {
 		}
 	}
 	/**
-	 * 发送命令，并接收数据
+	 * 发送命令，并接收显示频谱的数据
 	 * @author usdr
 	 *
 	 */
-	public class GetUdpDataThread implements Runnable {
+	public class GetSpectrumDataThread implements Runnable {
 		private String destIP;			//目标IP
 		private int destPort;			//目标端口
 		private int command;			//命令
 		private int bagsNeeded;			//需要的包数
 		private UdpDataConsumer consumer;				//数据消费者
 
-		public GetUdpDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+		public GetSpectrumDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
 			this.destIP = destIP;
 			this.destPort = destPort;
 			this.command = command;
@@ -77,7 +78,7 @@ public class UdpRelatedThreads {
 			synchronized (udpSocket) {
 				udpSocket.sendUdpMesg(destIP, 					// 目标IP
 						destPort, 								// 目标端口
-						new byte[]{(byte) 0xc7}); 	// 控制命令
+						DataConvert.intToBytesArray(command)); 	// 控制命令
 			}
 			byte[] packetBuffer = new byte[1470];
 			for(int bagsCount = 0; bagsCount < bagsNeeded / 2; bagsCount++) {
@@ -86,7 +87,12 @@ public class UdpRelatedThreads {
 						temp = udpSocket.receUdpMesg(packetBuffer);
 				}
 //				temp = TestSpectrumDataGet.spectrumDataGet(packetBuffer);
-				consumer.dataConsumer(temp, packetBuffer);
+				try {
+					consumer.dataConsumer(temp, packetBuffer);
+				} catch (DataLenUnproperException e) {	//接收数据长度异常
+					e.printStackTrace();
+					return;
+				}
 //				System.out.println("Received:  " + temp + "\tbagsCount: " + bagsCount);
 				if (temp <= 0) {	//udp未打开（-1）或接收超时（0）
 					return;
@@ -97,7 +103,7 @@ public class UdpRelatedThreads {
 			synchronized (udpSocket) {
 				udpSocket.sendUdpMesg(destIP, 					// 目标IP
 						destPort, 								// 目标端口
-						new byte[]{(byte) 0xc8}); 	// 控制命令
+						DataConvert.intToBytesArray(command + 1)); 	// 控制命令
 			}		
 			for(int bagsCount = 0; bagsCount < bagsNeeded / 2; bagsCount++) {
 				int temp = 0;
@@ -105,13 +111,66 @@ public class UdpRelatedThreads {
 						temp = udpSocket.receUdpMesg(packetBuffer);
 				}
 //				int temp = TestSpectrumDataGet.spectrumDataGet(packetBuffer);
-				consumer.dataConsumer(temp, packetBuffer);
+				try {
+					consumer.dataConsumer(temp, packetBuffer);
+				} catch (DataLenUnproperException e) {		//接收数据长度异常
+					e.printStackTrace();
+					return;
+				}
 //				System.out.println("Received:  " + temp  + "\tbagsCount: " + bagsCount);
 				if (temp <= 0) {//udp未打开（-1）或接收超时（0）
 					return;
 				}
 			}
 
+		}
+	}
+	
+	/**
+	 * 发送命令，并接收显示星座图的数据
+	 * @author Gavin
+	 *
+	 */
+	public class GetConstellationDataThread implements Runnable {
+		private String destIP;			//目标IP
+		private int destPort;			//目标端口
+		private int command;			//命令
+		private int bagsNeeded;			//需要的包数
+		private UdpDataConsumer consumer;				//数据消费者
+
+		public GetConstellationDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+			this.destIP = destIP;
+			this.destPort = destPort;
+			this.command = command;
+			this.consumer = consumer;
+			this.bagsNeeded = consumer.getBagsNum();
+		}
+		
+		@Override
+		public void run() {
+			synchronized (udpSocket) {
+				udpSocket.sendUdpMesg(destIP, 					// 目标IP
+						destPort, 								// 目标端口
+						DataConvert.intToBytesArray(command)); 	// 控制命令
+			}
+			byte[] packetBuffer = new byte[1470];
+			for(int bagsCount = 0; bagsCount < bagsNeeded; bagsCount++) {
+				int temp = 0;
+				synchronized (udpSocket) {
+						temp = udpSocket.receUdpMesg(packetBuffer);
+				}
+//				temp = TestSpectrumDataGet.spectrumDataGet(packetBuffer);
+				try {
+					consumer.dataConsumer(temp, packetBuffer);
+				} catch (DataLenUnproperException e) {	//接收数据长度异常
+					e.printStackTrace();
+					return;
+				}
+//				System.out.println("Received:  " + temp + "\tbagsCount: " + bagsCount);
+				if (temp <= 0) {	//udp未打开（-1）或接收超时（0）
+					return;
+				}
+			}
 		}
 	}
 }

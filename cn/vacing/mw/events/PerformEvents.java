@@ -1,4 +1,4 @@
-﻿package cn.vacing.mwEvents;
+﻿package cn.vacing.mw.events;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,13 +8,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Future;
 
+import cn.vacing.mw.ConstellationShowRoutine;
 import cn.vacing.mw.FinalVar;
 import cn.vacing.mw.SpectrumShowRoutine;
-import cn.vacing.mwGui.MainFrame;
-import cn.vacing.mwThreads.UdpRelatedThreads;
-import cn.vacing.mwUdp.UdpSocket;
-import cn.vacing.perfomaceGui.ConstellationDisplay;
-import cn.vacing.perfomaceGui.SpectrumDisplay;
+import cn.vacing.mw.gui.MainFrame;
+import cn.vacing.mw.perfomace_gui.ConstellationDisplay;
+import cn.vacing.mw.perfomace_gui.SpectrumDisplay;
+import cn.vacing.mw.threads.UdpRelatedThreads;
+import cn.vacing.mw.udp.UdpSocket;
 
 public class PerformEvents implements ActionListener, WindowListener {
 
@@ -45,50 +46,53 @@ public class PerformEvents implements ActionListener, WindowListener {
 	 * 开始显示干扰抵消性能频谱
 	 */
 	public void cancePerformStart() {
-		System.out.println("perform start");
-		showSpectrum = true;
+		synchronized (showSpectrum) {
+			System.out.println("perform start");
+			showSpectrum = true;
+		}
 	}
 	
 	/**
 	 * 停止显示抵消性能频谱
 	 */
 	public void cancePerformStop() {
-		System.out.println("perform stop");
-		showSpectrum = false;
+		synchronized (showSpectrum) {
+			System.out.println("perform stop");
+			showSpectrum = false;
+		}
 	}
 	
 	/**
 	 * 开始显示星座图
 	 */
 	public void constellationStart() {
-		System.out.println("constellationStart");
-		urt.submitThread(urt.new GetUdpDataThread(mainFrame.getFpga1Ip(), 
-				FinalVar.PORT_2,
-				FinalVar.CONSTELLATION_START_COMMAND, 
-				new SpectrumShowRoutine(spectrumDisplay)));
+		synchronized (showConstellation) {
+			System.out.println("constellationStart");
+			showConstellation = true;
+		}
 	}
 	
 	/**
 	 * 停止显示星座图
 	 */
 	public void constellationStop() {
-		System.out.println("constellationStop");
-
+		synchronized (showConstellation) {
+			System.out.println("constellationStop");
+			showConstellation = false;
+		}
 	}
 	
 	/**
 	 * 显示数字干扰抵消窗口
 	 */
 	public void showCancePerform() {
-		spectrumDisplay = SpectrumDisplay.getInstance(this, this);
 		spectrumDisplay.setVisible(true);
 	}
 
 	/**
 	 * 显示链路星座图窗口
 	 */
-	public void showConstellation() {
-		constellationDisplay = ConstellationDisplay.getInstance(this, this);
+	public void showConstellation() {	
 		constellationDisplay.setVisible(true);
 	}
 	
@@ -105,33 +109,52 @@ public class PerformEvents implements ActionListener, WindowListener {
 	 * 添加定时器，满足条件的情况下定时获取数据
 	 */
 	public PerformEvents () {
-		spectrumTimer = new Timer(false);
+		performTimer = new Timer(false);
+		spectrumDisplay = SpectrumDisplay.getInstance(this, this);
+		constellationDisplay = ConstellationDisplay.getInstance(this, this);
+		consShowRoutine = new ConstellationShowRoutine(constellationDisplay);
 		spectrumTimerTask = new TimerTask() {
 			@Override
 			public void run() {
-				if(showSpectrum) {
-//					showSpectrum = false;
-					System.out.println("Timer works" + 
-										"\tIP:" + mainFrame.getFpga1Ip()
-										+"\tPort:" + FinalVar.PORT_2);
-					UdpRelatedThreads.GetUdpDataThread gud = urt.new GetUdpDataThread(mainFrame.getFpga1Ip(), 
-							FinalVar.PORT_2,
-							FinalVar.CANCE_PERFORM_START_COMMAND, 
-							new SpectrumShowRoutine(spectrumDisplay));
-					urt.submitThread(gud);	
+				synchronized (showSpectrum) {
+					if(showSpectrum) {	//频谱显示
+	//					showSpectrum = false;
+						System.out.println("Timer works" + 
+											"\tIP:" + mainFrame.getFpga1Ip()
+											+"\tPort:" + FinalVar.PORT_2);
+						UdpRelatedThreads.GetSpectrumDataThread gud = urt.new GetSpectrumDataThread(mainFrame.getFpga1Ip(), 
+								FinalVar.PORT_2,
+								FinalVar.CANCE_PERFORM_START_COMMAND, 
+								new SpectrumShowRoutine(spectrumDisplay));
+						urt.submitThread(gud);	
+					}
+				}
+				synchronized (showConstellation) {
+					if(showConstellation) {	//星座图显示
+						System.out.println("Timer works" + 
+								"\tIP:" + mainFrame.getFpga1Ip()
+								+"\tPort:" + FinalVar.PORT_2);
+						UdpRelatedThreads.GetConstellationDataThread gud = urt.new GetConstellationDataThread(mainFrame.getFpga1Ip(), 
+								FinalVar.PORT_2,
+								FinalVar.CONSTELLATION_START_COMMAND, 
+								consShowRoutine);
+						urt.submitThread(gud);	
+					}
 				}
 			}
 		};
-		spectrumTimer.schedule(spectrumTimerTask, 1000, 200);
+		performTimer.schedule(spectrumTimerTask, 1000, 100);
 	}
 	private MainFrame mainFrame;
 	private UdpRelatedThreads urt;
 	private SpectrumDisplay spectrumDisplay;
 	private ConstellationDisplay constellationDisplay;
+	private ConstellationShowRoutine consShowRoutine;	//星座图要滑动显示，因此不能每次新建
 	
-	private Timer spectrumTimer;
+	private Timer performTimer;
 	private TimerTask spectrumTimerTask;
-	private Boolean showSpectrum = false;
+	private volatile Boolean showSpectrum = false;
+	private volatile Boolean showConstellation = false;
 	private Future<?> spectrumFuture;
 	
 	@Override
@@ -143,6 +166,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 	public void windowClosing(WindowEvent e) {
 		// TODO Auto-generated method stub
 		cancePerformStop();
+		constellationStop();
 	}
 
 	@Override

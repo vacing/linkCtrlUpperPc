@@ -1,4 +1,4 @@
-﻿package cn.vacing.mwGui;
+﻿package cn.vacing.mw.gui;
 
 import java.awt.Font;
 import java.awt.GridLayout;

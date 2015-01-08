@@ -1,9 +1,10 @@
-package cn.vacing.mwEvents;
+package cn.vacing.mw.events;
 
 import cn.vacing.mw.FinalVar;
-import cn.vacing.mwGui.MainFrame;
-import cn.vacing.mwThreads.UdpRelatedThreads;
-import cn.vacing.mwUdp.UdpSocket;
+import cn.vacing.mw.gui.MainFrame;
+import cn.vacing.mw.threads.UdpRelatedThreads;
+import cn.vacing.mw.tools.DataConvert;
+import cn.vacing.mw.udp.UdpSocket;
 
 public class LinkCtrlEvents {
 	/**

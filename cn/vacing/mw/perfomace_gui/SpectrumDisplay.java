@@ -1,4 +1,4 @@
-﻿package cn.vacing.perfomaceGui;
+﻿package cn.vacing.mw.perfomace_gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,8 +13,6 @@ import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -158,7 +156,6 @@ public class SpectrumDisplay  extends javax.swing.JDialog {
     }    
     /**
      * 描绘频谱图表，参数初始化
-     *
      * @return
      */
     private JFreeChart createSpectrumChart() {
@@ -190,6 +187,7 @@ public class SpectrumDisplay  extends javax.swing.JDialog {
         //图表坐标轴范围设置
         NumberAxis rangeAxis = (NumberAxis) spectrumPlot.getRangeAxis();	//纵轴
         rangeAxis.setRange(-50.0, 10.0);
+        rangeAxis.setAutoRange(false);	//纵坐标不自动变化
         NumberAxis domainAxis = (NumberAxis) spectrumPlot.getDomainAxis();	//横轴
         domainAxis.setRange(0.0, 1024.0);
         

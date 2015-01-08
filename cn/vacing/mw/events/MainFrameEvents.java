@@ -1,4 +1,4 @@
-﻿package cn.vacing.mwEvents;
+﻿package cn.vacing.mw.events;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,9 +11,9 @@ import javax.swing.SwingUtilities;
 
 import cn.vacing.mw.FinalVar;
 import cn.vacing.mw.MainThread;
-import cn.vacing.mwGui.MainFrame;
-import cn.vacing.mwThreads.UdpRelatedThreads;
-import cn.vacing.mwUdp.UdpSocket;
+import cn.vacing.mw.gui.MainFrame;
+import cn.vacing.mw.threads.UdpRelatedThreads;
+import cn.vacing.mw.udp.UdpSocket;
 
 public class MainFrameEvents implements ActionListener, WindowListener {
 

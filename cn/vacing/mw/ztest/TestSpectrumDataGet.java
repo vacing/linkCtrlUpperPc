@@ -1,4 +1,4 @@
-package cn.vacing.test;
+package cn.vacing.mw.ztest;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

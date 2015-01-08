@@ -10,11 +10,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import cn.vacing.mwEvents.DataConvert;
-import cn.vacing.mwThreads.UdpDataConsumer;
-import cn.vacing.perfomaceGui.Complex;
-import cn.vacing.perfomaceGui.FFT;
-import cn.vacing.perfomaceGui.SpectrumDisplay;
+import cn.vacing.mw.exception.DataLenUnproperException;
+import cn.vacing.mw.perfomace_gui.SpectrumDisplay;
+import cn.vacing.mw.threads.UdpDataConsumer;
+import cn.vacing.mw.tools.Complex;
+import cn.vacing.mw.tools.DataConvert;
+import cn.vacing.mw.tools.FFT;
 
 /**
  * 频谱显示事务处理。
@@ -23,27 +24,24 @@ import cn.vacing.perfomaceGui.SpectrumDisplay;
  */
 public class SpectrumShowRoutine implements UdpDataConsumer {
 	private SpectrumDisplay spectrumDisplay;
-	private int spectrumShowTimes = 0;
-	private ArrayList<Complex> complexList;
-	private Complex[] complexArr = new Complex[SPECTRUM_LEN];
+
 	private static final int SPECTRUM_LEN = 1024;
 	private static final int BAGS = 5;
 	private static final int CIRCUMSTANCES = 2;
+	private final int bagsNeeded = BAGS * CIRCUMSTANCES;	//本消费者需要的包数
+	private volatile int receivedBagsCount = 0;	//收到的数据包的计数
+	private ArrayList<Complex> complexList;	//保存接收到的数据
+	private Complex[] complexArr = new Complex[SPECTRUM_LEN];	//存储收到的数据转换而成复数
 	
-	private int bagsNeeded;
+	
 	public SpectrumShowRoutine(SpectrumDisplay spectrumDisplay) {
-		this.bagsNeeded = BAGS * CIRCUMSTANCES;
 		this.spectrumDisplay = spectrumDisplay;
 	}
 	
-//	public SpectrumShowRoutine() {
-//		this.bagsNeeded = BAGS;
-//	}
-	
 	private int byteCount  = 0;
 	@Override
-	public void dataConsumer(int length, byte[] data) {
-		if(spectrumShowTimes % BAGS == 0) {
+	public synchronized void dataConsumer(int length, byte[] data) throws DataLenUnproperException{
+		if(receivedBagsCount % BAGS == 0) {
 			complexList = new ArrayList<Complex>(SPECTRUM_LEN * 2);
 		}
 		
@@ -63,69 +61,60 @@ public class SpectrumShowRoutine implements UdpDataConsumer {
 //			e1.printStackTrace();
 //		}
 		
-		switch(spectrumShowTimes / BAGS) {
+		switch(receivedBagsCount / BAGS) {
 			case 0:	//抵消前
-			{
-				try {						
-					double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, 3, 21);	//24Q21
-					List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(tempDouble, tempDouble.length));
-					complexList.addAll(tempComplex);
+			{		
+				double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, 3, 21);	//24Q21
+				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(tempDouble, tempDouble.length));
+				complexList.addAll(tempComplex);
 
-					if(spectrumShowTimes == BAGS - 1) {
-						if(complexList.size() >= SPECTRUM_LEN) {
-							complexList = trim2Size(complexList, SPECTRUM_LEN);
-							Complex[] fftResult = FFT.fft(complexList.toArray(complexArr));
-							arrMirror(fftResult);	// 将频谱的(pi -> 2*pi)的部分折叠到(-pi -> 0)
-							double[][] power = DataConvert.complexArr2PowerArr(fftResult);
-							
+				if(receivedBagsCount == BAGS - 1) {
+					if(complexList.size() >= SPECTRUM_LEN) {
+						complexList = DataConvert.trim2Size(complexList, SPECTRUM_LEN);
+						Complex[] fftResult = FFT.fft(complexList.toArray(complexArr));
+						arrMirror(fftResult);	// 将频谱的(pi -> 2*pi)的部分折叠到(-pi -> 0)
+						double[][] power = DataConvert.complexArr2PowerArr(fftResult);
+						
 //							//output data, simulate in matlab
-//							PrintWriter outC = new PrintWriter(new BufferedWriter(new FileWriter("power_before.txt")));
+//							PrintWriter outC;
+//							outC = new PrintWriter(new BufferedWriter(new FileWriter("power_before.txt")));
 //							for(double d: power[1]) {
 //								outC.println(d);
 //							}	
 //							outC.close();
-							
-							spectrumDisplay.showAvgPowerBefore(getMean(power[1]));
-							DataConvert.smoothLine(power[1], 5);//曲线滑动平滑
-							spectrumDisplay.drawSpectrum(SpectrumDisplay.BEFORE, power);
-						}
+						
+						spectrumDisplay.showAvgPowerBefore(getMean(power[1]));
+						DataConvert.smoothLine(power[1], 5);//曲线滑动平滑
+						spectrumDisplay.drawSpectrum(SpectrumDisplay.BEFORE, power);
 					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 				break;
 			}
 			case 1:	//抵消后
 			{
-				try {
-					double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, 3, 21);	//24Q21
-					List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(tempDouble, tempDouble.length));
-					complexList.addAll(tempComplex);
-	//				System.out.println("complexList: " + complexList.size());
-					if(spectrumShowTimes == 2 * BAGS - 1) {
-						complexList = trim2Size(complexList, SPECTRUM_LEN);
-						if(complexList.size() == SPECTRUM_LEN) {
-							Complex[] fftResult = FFT.fft(complexList.toArray(complexArr));
-							arrMirror(fftResult);	// 将频谱的(pi -> 2*pi)的部分折叠到(-pi -> 0)
-							double[][] power = DataConvert.complexArr2PowerArr(fftResult);
-							
-							
+				double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, 3, 21);	//24Q21
+				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(tempDouble, tempDouble.length));
+				complexList.addAll(tempComplex);
+//				System.out.println("complexList: " + complexList.size());
+				if(receivedBagsCount == 2 * BAGS - 1) {
+					complexList = DataConvert.trim2Size(complexList, SPECTRUM_LEN);
+					if(complexList.size() == SPECTRUM_LEN) {
+						Complex[] fftResult = FFT.fft(complexList.toArray(complexArr));
+						arrMirror(fftResult);	// 将频谱的(pi -> 2*pi)的部分折叠到(-pi -> 0)
+						double[][] power = DataConvert.complexArr2PowerArr(fftResult);
+						
+						
 //							//output data, simulate in matlab
 //							PrintWriter outC = new PrintWriter(new BufferedWriter(new FileWriter("power_after.txt")));
 //							for(double d: power[1]) {
 //								outC.println(d);
 //							}	
 //							outC.close();
-							
-							spectrumDisplay.showAvgPowerAfter(getMean(power[1]));
-							DataConvert.smoothLine(power[1], 5);//曲线滑动平滑
-							spectrumDisplay.drawSpectrum(SpectrumDisplay.AFTER, power);
-						}
+						
+						spectrumDisplay.showAvgPowerAfter(getMean(power[1]));
+						DataConvert.smoothLine(power[1], 5);//曲线滑动平滑
+						spectrumDisplay.drawSpectrum(SpectrumDisplay.AFTER, power);
 					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 				break;
 			}
@@ -133,7 +122,7 @@ public class SpectrumShowRoutine implements UdpDataConsumer {
 				System.out.println(this.getClass().getName() + " Error");
 		}
 		
-		spectrumShowTimesAdd();
+		receivedBagsAdd();
 	}
 	
 	/**
@@ -166,27 +155,14 @@ public class SpectrumShowRoutine implements UdpDataConsumer {
 	}
 	
 	/**
-	 * 数据长度截取为1024
-	 */
-	private ArrayList<Complex> trim2Size(ArrayList<Complex> lc, int size) {
-		ArrayList<Complex> listTemp = new ArrayList<Complex>(size);
-		
-		for(Iterator<Complex> it = lc.iterator(); it.hasNext() && listTemp.size() < size; /*null*/) {
-			listTemp.add(it.next());
-		}
-//		System.out.println("listTemp.size: " + listTemp.size());
-		return listTemp;
-	}
-	
-	/**
 	 * 返回需要消费的包数
 	 */
 	public int getBagsNum() {
 		return bagsNeeded;
 	}
 	
-	private void spectrumShowTimesAdd() {
-		if(spectrumShowTimes++ >= BAGS * CIRCUMSTANCES)
-			spectrumShowTimes = 0;
+	private synchronized void receivedBagsAdd() {
+		if(receivedBagsCount++ >= bagsNeeded)
+			receivedBagsCount = 0;
 	}
 }	

@@ -7,10 +7,10 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JOptionPane;
 
-import cn.vacing.mwEvents.MainFrameEvents;
-import cn.vacing.mwGui.*;
-import cn.vacing.mwThreads.UdpRelatedThreads;
-import cn.vacing.mwUdp.*;
+import cn.vacing.mw.events.MainFrameEvents;
+import cn.vacing.mw.gui.*;
+import cn.vacing.mw.threads.UdpRelatedThreads;
+import cn.vacing.mw.udp.*;
 
 public class MainThread {
 	/**

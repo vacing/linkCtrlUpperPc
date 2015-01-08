@@ -1,4 +1,4 @@
-﻿package cn.vacing.mwUdp;
+﻿package cn.vacing.mw.udp;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -17,11 +17,7 @@ import javax.swing.JOptionPane;
 public class UdpSocket
 {
 	private DatagramSocket 	ds;
-	private DatagramPacket 	dpSend;
-	private DatagramPacket 	dpRece;
-	private String 			ipAddressLocal = "127.0.0.1";	//default
-	private int 			portLocal = 6001;				//default
-	private Boolean isUdpSockOpened;
+	private volatile Boolean isUdpSockOpened;
 	
 	/**
 	 * 初始化udp socket
@@ -30,32 +26,21 @@ public class UdpSocket
 	 */
 	public UdpSocket(String ipAddressLocal, int portLocal) throws SocketException, UnknownHostException
 	{
-		this.ipAddressLocal = ipAddressLocal;
-		this.portLocal = portLocal;
-//		InetAddress ia = InetAddress.getLocalHost();
 		ds = new DatagramSocket(portLocal, InetAddress.getByName(ipAddressLocal));
-//		System.out.println(ia.getHostAddress());
 		isUdpSockOpened = new Boolean(true);
-		ds.setSoTimeout(200);	//receive time out
-//		ds.connect(new InetSocketAddress(this.ipAddressDest, this.portDest));
+		ds.setSoTimeout(20);	//receive time out
 		System.out.println("Udp 启动成功!");
 	}
 	
 	/**
-	 * 设置本地端口和ip
-	 */
-	public void setIpPort(String ip, int port) {
-		this.ipAddressLocal = ip;
-		this.portLocal = port;
-	}
-	
-	/**
-	 * 获取udp socket是否建立
+	 * 获取udp socket是否建立标识。
 	 * @return
 	 */
 	public Boolean isUdpSockOpened()
 	{
-		return isUdpSockOpened;
+		synchronized(isUdpSockOpened) {
+			return isUdpSockOpened;
+		}
 	}
 	
 	/**
@@ -66,22 +51,25 @@ public class UdpSocket
 	 */
 	public void sendUdpMesg(String ipAddressDest, int portDest, byte[] mesg)
 	{
-		if(! isUdpSockOpened)
-		{
-			System.out.println("UDP 尚未建立连接。");
-			return;
-		}
-//		System.out.println(ipAddressDest);
-		synchronized(ds) {
-			try
+		synchronized(isUdpSockOpened) {
+			if(! isUdpSockOpened)
 			{
-				dpSend = new DatagramPacket(mesg, mesg.length, 
-						InetAddress.getByName(ipAddressDest), portDest);
+				System.out.println("UDP 尚未建立连接。");
+				return;
+			}
+		}
+		
+//		System.out.println(ipAddressDest);
+		try
+		{
+			DatagramPacket dpSend = new DatagramPacket(mesg, mesg.length, 
+					InetAddress.getByName(ipAddressDest), portDest);
+			synchronized(ds) {
 				ds.send(dpSend);
 			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	
@@ -91,38 +79,39 @@ public class UdpSocket
 	 * @return
 	 */
 	public int receUdpMesg(byte[] inBuffer)
-	{
-		if(! isUdpSockOpened)
-		{
-			System.out.println("UDP 尚未建立连接。");
-			return -1;
-		}
-		
-		synchronized(ds)
-		{
-			try
+	{		
+		synchronized (isUdpSockOpened) {
+			if(! isUdpSockOpened)
 			{
-				dpRece = new DatagramPacket(inBuffer, inBuffer.length);
+				System.out.println("UDP 尚未建立连接。");
+				return -1;
+			}
+		}
+
+		try
+		{
+			DatagramPacket dpRece = new DatagramPacket(inBuffer, inBuffer.length);
+			synchronized(ds) {
 				ds.receive(dpRece);
 			}
-			catch (SocketTimeoutException e) {
-				System.out.println("UDP socket receive is time out!!");
-				return 0;
-			}
-			catch(Exception e)
-			{
-	//			e.printStackTrace();
-			}
+			return dpRece.getLength();
 		}
-		
-		return dpRece.getLength();
+		catch (SocketTimeoutException e) {
+			System.out.println("UDP socket receive is time out!!");
+			return -1;
+		}
+		catch(Exception e)
+		{
+	//			e.printStackTrace();
+			return -1;
+		}
 	}
 	
 	/**
 	 * 关闭创建的UDP链接。
 	 * 首先检测链接是否创建，如果未创建，则提示错误；否则，关闭创建的链接。
 	 */
-	public void closeUdp()
+	public synchronized void closeUdp()
 	{
 		if(!isUdpSockOpened)
 			return;

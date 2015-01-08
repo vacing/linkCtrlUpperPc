@@ -1,4 +1,4 @@
-﻿package cn.vacing.perfomaceGui;
+﻿package cn.vacing.mw.perfomace_gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,6 +26,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
 import cn.vacing.mw.FinalVar;
+import cn.vacing.mw.tools.Complex;
 
 public class ConstellationDisplay  extends javax.swing.JDialog {
 	
@@ -39,6 +40,10 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
     private static ConstellationDisplay singlePerformDialog;		//single Instance
     private static Object classLock = new Object();					//class synchronize lock
     private Object objLock = new Object();								//object lock
+    
+    //legends
+    public static final String BEFORE = "BeforeCancellation";
+    public static final String AFTER = "AfterCancellation";
    
     /**
      * Creates new form PerformanceDialog
@@ -52,6 +57,12 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
     		}
     	}
     	return singlePerformDialog;
+    }
+    
+    //for test only, needn'g assign many arguments
+    private ConstellationDisplay()
+    {
+    	panelInit(); 
     }
     
     //private constructors
@@ -85,20 +96,21 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
 	}  
 
 	/**
-	 * 更新星座图样点
+	 * 更新星座图样点。
+	 * 二维数组中，第一个一维数组表示横坐标集合，第二个一维数组表示每个横坐标对应的纵坐标。
 	 */
-    public void drawConstellation(String legend, Complex[] constellationDataset) {
+    public void drawConstellation(String legend, double[][] constellationDataset) {
     	synchronized(objLock) {									//Synchronized method
-        	Complex[] constCopy = constellationDataset.clone();//数据拷贝到本地显示
+    		double[][] constCopy = constellationDataset.clone();//数据拷贝到本地显示
         	XYSeries xys = new XYSeries(legend);
-        	for(int i = 0; i< constCopy.length; i++){
-        		xys.add(constCopy[i].re(), constCopy[i].im());
+        	for(int i = 0; i< constCopy[0].length; i++){
+        		xys.add(constCopy[0][i], constCopy[1][i]);
         	}
         	XYSeriesCollection xysc = new XYSeriesCollection(xys);
         	
-            if ("RF".equals(legend)) {
+            if (BEFORE.equals(legend)) {
             	constellationPlot.setDataset(0, xysc);
-            } else if ("FB".equals(legend)) {
+            } else if (AFTER.equals(legend)) {
             	constellationPlot.setDataset(1, xysc);
             } else {
             	System.out.println("Series legend is error");
@@ -141,14 +153,13 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
         //分别设置渲染效果
         XYDotRenderer rendererZero = new XYDotRenderer();
         constellationPlot.setRenderer(0, rendererZero);
+        rendererZero.setSeriesPaint(0, Color.RED);
         rendererZero.setDotWidth(3);
         rendererZero.setDotHeight(3);
         
         XYDotRenderer rendererFir = new XYDotRenderer();
         constellationPlot.setRenderer(1, rendererFir);
-        rendererZero.setSeriesPaint(0, Color.RED);
         rendererFir.setSeriesPaint(0, Color.YELLOW);
-
         rendererFir.setDotWidth(3);
         rendererFir.setDotHeight(3);       
         
@@ -221,4 +232,24 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
 
     // End of variables declaration
     private static final long serialVersionUID = -5955667932192512066L;
+    
+    public static void main(String[] args) {
+    	ConstellationDisplay c = new ConstellationDisplay();
+    	c.setVisible(true);
+    	
+    	double[][] dataB = new double[][]{
+    			{0.5, 0.5, 0.5, 0.5,0.5, 0.5},	//x axis
+    			{0.1, 0.2, 0.3, 0.4,0.5, 0.6},	//y axis
+    	};
+    	
+    	c.drawConstellation(c.BEFORE, dataB);
+    	
+    	double[][] dataA = new double[][]{
+    			{0.1, 0.2, 0.3, 0.4,0.5, 0.6},
+    			{0.5, 0.5, 0.5, 0.5,0.5, 0.5},
+    	};
+    	
+    	c.drawConstellation(c.AFTER, dataA);
+
+    }
 }
