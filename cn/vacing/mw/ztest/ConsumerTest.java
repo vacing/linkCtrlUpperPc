@@ -1,6 +1,6 @@
 package cn.vacing.mw.ztest;
 
-import cn.vacing.mw.SpectrumShowRoutine;
+import cn.vacing.mw._main.SpectrumShowRoutine;
 import cn.vacing.mw.perfomace_gui.SpectrumDisplay;
 
 public class ConsumerTest {

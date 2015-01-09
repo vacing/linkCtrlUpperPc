@@ -8,9 +8,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Future;
 
-import cn.vacing.mw.ConstellationShowRoutine;
-import cn.vacing.mw.FinalVar;
-import cn.vacing.mw.SpectrumShowRoutine;
+import cn.vacing.mw._main.ConstellationShowRoutine;
+import cn.vacing.mw._main.FinalVar;
+import cn.vacing.mw._main.SpectrumShowRoutine;
 import cn.vacing.mw.gui.MainFrame;
 import cn.vacing.mw.perfomace_gui.ConstellationDisplay;
 import cn.vacing.mw.perfomace_gui.SpectrumDisplay;
@@ -67,7 +67,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 	 */
 	public void constellationStart() {
 		synchronized (showConstellation) {
-			System.out.println("constellationStart");
+			System.out.println("constellation Start");
 			showConstellation = true;
 		}
 	}
@@ -77,7 +77,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 	 */
 	public void constellationStop() {
 		synchronized (showConstellation) {
-			System.out.println("constellationStop");
+			System.out.println("constellation Stop");
 			showConstellation = false;
 		}
 	}
@@ -118,7 +118,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 			public void run() {
 				synchronized (showSpectrum) {
 					if(showSpectrum) {	//频谱显示
-	//					showSpectrum = false;
+						showSpectrum = false;
 						System.out.println("Timer works" + 
 											"\tIP:" + mainFrame.getFpga1Ip()
 											+"\tPort:" + FinalVar.PORT_2);
@@ -131,6 +131,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 				}
 				synchronized (showConstellation) {
 					if(showConstellation) {	//星座图显示
+						showConstellation = false;
 						System.out.println("Timer works" + 
 								"\tIP:" + mainFrame.getFpga1Ip()
 								+"\tPort:" + FinalVar.PORT_2);

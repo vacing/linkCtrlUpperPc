@@ -23,24 +23,24 @@ public class TestSpectrumDataGet {
 	private static int noise = 0;
 	private static int times = 0;
 	
-	public static void main(String[] args) throws Exception {
-		byte[] byteTemp = read("./d_jhh_1_com_N.txt");
-		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("./out.txt"));
-		PrintStream old = System.out;
-		System.setOut(new PrintStream(bos));
-		int i = 0;
-		for(byte b: byteTemp) {
-			System.out.printf("%X", b);
-			
-			if((i++)%3 == 2) {
-				System.out.printf("\n");
-			}
-		}
-		
-		System.setOut(old);
-		bos.close();
-		
-	}
+//	public static void main(String[] args) throws Exception {
+//		byte[] byteTemp = read("./d_jhh_1_com_N.txt");
+//		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("./out.txt"));
+//		PrintStream old = System.out;
+//		System.setOut(new PrintStream(bos));
+//		int i = 0;
+//		for(byte b: byteTemp) {
+//			System.out.printf("%X", b);
+//			
+//			if((i++)%3 == 2) {
+//				System.out.printf("\n");
+//			}
+//		}
+//		
+//		System.setOut(old);
+//		bos.close();
+//		
+//	}
 
 	/**
 	 * 按照底层格式返回数据

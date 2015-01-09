@@ -9,8 +9,8 @@ import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import cn.vacing.mw.FinalVar;
-import cn.vacing.mw.MainThread;
+import cn.vacing.mw._main.FinalVar;
+import cn.vacing.mw._main.MainThread;
 import cn.vacing.mw.gui.MainFrame;
 import cn.vacing.mw.threads.UdpRelatedThreads;
 import cn.vacing.mw.udp.UdpSocket;

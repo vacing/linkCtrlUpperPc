@@ -26,7 +26,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
-import cn.vacing.mw.FinalVar;
+import cn.vacing.mw._main.FinalVar;
 
 public class SpectrumDisplay  extends javax.swing.JDialog {
 	

@@ -1,6 +1,6 @@
 package cn.vacing.mw.events;
 
-import cn.vacing.mw.FinalVar;
+import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw.gui.MainFrame;
 import cn.vacing.mw.threads.UdpRelatedThreads;
 import cn.vacing.mw.tools.DataConvert;

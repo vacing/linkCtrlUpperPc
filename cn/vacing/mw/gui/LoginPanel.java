@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import cn.vacing.mw.FinalVar;
+import cn.vacing.mw._main.FinalVar;
 
 
 /**
