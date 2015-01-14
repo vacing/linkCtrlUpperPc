@@ -8,6 +8,6 @@ It can communicate with the slave board by udp protocol, get data and show it's 
 
 Instructrion
 -----------
-    There are only the source code of my project, and it was ognized by pocket.
+    There exist only the source code of my project, and it was ognized by pocket.
     You can create a new Eclipse project, and add all files in your src directory.
 
