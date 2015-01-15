@@ -76,18 +76,18 @@ public class UdpRelatedThreads {
 		@Override
 		public void run() {
 			//抵消前数据上传
-//			synchronized (udpSocket) {
-//				udpSocket.sendUdpMesg(destIP, 					// 目标IP
-//						destPort, 								// 目标端口
-//						DataConvert.intToBytesArray(command)); 	// 控制命令
-//			}
+			synchronized (udpSocket) {
+				udpSocket.sendUdpMesg(destIP, 					// 目标IP
+						destPort, 								// 目标端口
+						DataConvert.intToBytesArray(command)); 	// 控制命令
+			}
 			byte[] packetBuffer = new byte[1470];
 			for(int bagsCount = 0; bagsCount < bagsNeeded / 2; bagsCount++) {
 				int temp = 0;
 				synchronized (udpSocket) {
-//					temp = udpSocket.receUdpMesg(packetBuffer);
+					temp = udpSocket.receUdpMesg(packetBuffer);
 				}
-				temp = TestSpectrumDataGet.spectrumDataGet(packetBuffer);
+//				temp = TestSpectrumDataGet.spectrumDataGet(packetBuffer);
 				if(!receError) {	//发生一次接收错误，则不再更新频谱，但是仍要接收数据
 					try {
 						consumer.dataConsumer(temp, packetBuffer);
@@ -103,17 +103,17 @@ public class UdpRelatedThreads {
 			}
 			
 			//抵消后数据上传
-//			synchronized (udpSocket) {
-//				udpSocket.sendUdpMesg(destIP, 					// 目标IP
-//						destPort, 								// 目标端口
-//						DataConvert.intToBytesArray(command + 1)); 	// 控制命令
-//			}		
+			synchronized (udpSocket) {
+				udpSocket.sendUdpMesg(destIP, 					// 目标IP
+						destPort, 								// 目标端口
+						DataConvert.intToBytesArray(command + 1)); 	// 控制命令
+			}		
 			for(int bagsCount = 0; bagsCount < bagsNeeded / 2; bagsCount++) {
 				int temp = 0;
 				synchronized (udpSocket) {
-//					temp = udpSocket.receUdpMesg(packetBuffer);
+					temp = udpSocket.receUdpMesg(packetBuffer);
 				}
-				temp = TestSpectrumDataGet.spectrumDataGet(packetBuffer);
+//				temp = TestSpectrumDataGet.spectrumDataGet(packetBuffer);
 				if(!receError) {	//发生一次接收错误，则不再更新频谱，但是仍要接收数据
 					try {
 						consumer.dataConsumer(temp, packetBuffer);

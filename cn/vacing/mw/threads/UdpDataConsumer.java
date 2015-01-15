@@ -26,7 +26,7 @@ public abstract class UdpDataConsumer {
 	
 	/**
 	 * 返回需要消费的包数
-	 * @return
+	 * @return 本消费者要消费的包数
 	 */
 	public int getBagsNum() {
 		return bagsNeeded;
