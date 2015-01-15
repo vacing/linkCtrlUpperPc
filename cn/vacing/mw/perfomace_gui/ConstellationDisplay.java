@@ -25,6 +25,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
+import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw.tools.Complex;
 
@@ -190,12 +191,12 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
         showConstellationStart.setPreferredSize(new Dimension(125, 40));
         showConstellationStart.setFont(new Font("Times New Roman", Font.PLAIN, 24));
         showConstellationStart.addActionListener(performEvents);
-        showConstellationStart.setActionCommand(FinalVar.CONSTELLATION_START);
+        showConstellationStart.setActionCommand(ButtonCommand.CONSTELLATION_START.name());
         showConstellationStop = new JButton("Stop");														//Stop按钮
         showConstellationStop.setPreferredSize(new Dimension(125, 40));
         showConstellationStop.setFont(new Font("Times New Roman", Font.PLAIN, 24));
         showConstellationStop.addActionListener(performEvents);
-        showConstellationStop.setActionCommand(FinalVar.CONSTELLATION_STOP);
+        showConstellationStop.setActionCommand(ButtonCommand.CONSTELLATION_STOP.name());
         
         GroupLayout gl_panel = new GroupLayout(constellationCtrlPanel);
         gl_panel.setHorizontalGroup(

@@ -9,6 +9,7 @@ import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw._main.MainThread;
 import cn.vacing.mw.gui.MainFrame;
@@ -17,25 +18,14 @@ import cn.vacing.mw.udp.UdpSocket;
 
 public class MainFrameEvents implements ActionListener, WindowListener {
 
-	private MainFrame mainFrame;
-	private UdpSocket udpSocket;
-	private UdpRelatedThreads urt;
-	private PerformEvents performEvents = new PerformEvents();
-	private LinkCtrlEvents linkCtrlEvents = new LinkCtrlEvents();
-	
+
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		String command = e.getActionCommand();
 
-		//login
-		if (command.equals(FinalVar.LOG_IN_CONFIRM)) {
-			loginSucess();
-			MainThread.mainInit(mainFrame, this);
-			return;
-		}
-		
+
 		//link control
 		if (command.equals(FinalVar.AD1_OPEN)) {
 			linkCtrlEvents.openAD1();
@@ -78,23 +68,58 @@ public class MainFrameEvents implements ActionListener, WindowListener {
 			return;
 		}
 		
-		//rf cancellation control
-//		if (command.equals(FinalVar.RF_CANCE_EXE)) {
-//			rfCanceExe();
-//			return;
-//		}
+		//命令处理
+		switch(Enum.valueOf(ButtonCommand.class, e.getActionCommand())) {
+		case LOG_IN_CONFIRM: 
+			loginSucess();
+			MainThread.mainInit(mainFrame, this);
+			break;
 		
-		
-		//performance watching
-		if (command.equals(FinalVar.SHOW_CANCE_PERFORM)) {
-			performEvents.showCancePerform();
-			return;
-		}
-		if (command.equals(FinalVar.SHOW_CONSTELLATION)) {
+		//数字干扰抵消
+		case DIR_CURR_CORRECT:		//直流偏置校准
+			System.out.println("digital cancellation-1");
+			digitCanceEvents.dirCurrCorr();
+			break;
+		case DI_CANCE_RESET_START:	//开始复位
+			System.out.println("digital cancellation-2");
+			digitCanceEvents.diCanceResetStart();
+			break;
+		case DI_CANCE_RESET_STOP:	//停止复位
+			System.out.println("digital cancellation-2.5");
+			digitCanceEvents.diCanceResetStop();
+			break;
+		case DI_PARAM_UP_START:		//开始参数更新
+			System.out.println("digital cancellation-3");
+			digitCanceEvents.paramUpdateStart();
+			break;
+		case DI_PARAM_UP_STOP:		//停止参数更新
+			System.out.println("digital cancellation-3.5");
+			digitCanceEvents.paramUpdateStop();
+			break;
+		case DI_RECE_TIME_DELAY:	//接收时延配置
+			System.out.println("digital cancellation-4");
+			digitCanceEvents.receTimeDelayConf();
+			break;
+		case DI_CATCH_LENGTH:		//缓存长度配置
+			System.out.println("digital cancellation-5");
+			digitCanceEvents.catchLengthConf();
+			break;
+		case DI_FEEDBACK_TIME_DELAY://反馈延时配置
+			System.out.println("digital cancellation-6");
+			digitCanceEvents.feedbackTimeDelayConf();
+			break;
+			
+		//性能展示
+		case SHOW_CONSTELLATION:	//显示星座图面板
 			performEvents.showConstellation();
+			break;
+		case SHOW_CANCE_PERFORM:	//显示频谱对比面板
+			performEvents.showCancePerform();
+			break;
+		default:
+			System.out.println(e.getActionCommand() + ": command is unused!!!!");
 			return;
 		}
-
 	}
 
 	/**
@@ -110,8 +135,7 @@ public class MainFrameEvents implements ActionListener, WindowListener {
 				try {
 					Runtime.getRuntime().exec(iperfCommand);
 				} catch (Exception ioe) {
-					JOptionPane
-							.showMessageDialog(
+					JOptionPane.showMessageDialog(
 									null,
 									"<html>"
 											+ "Impossible to start the rfCance.exe executable located here : <br>"
@@ -148,6 +172,7 @@ public class MainFrameEvents implements ActionListener, WindowListener {
 		this.urt = urt;
 		linkCtrlEvents.init(mainFrame, udpSocket, urt);
 		performEvents.init(mainFrame, urt);
+		digitCanceEvents.init(mainFrame, urt);
 	}
 
 	@Override
@@ -159,7 +184,12 @@ public class MainFrameEvents implements ActionListener, WindowListener {
 
 		System.exit(0);
 	}
-
+	private MainFrame mainFrame;
+	private UdpSocket udpSocket;
+	private UdpRelatedThreads urt;
+	private PerformEvents performEvents = new PerformEvents();
+	private LinkCtrlEvents linkCtrlEvents = new LinkCtrlEvents();
+	private DigitCanceEvents digitCanceEvents = new DigitCanceEvents();
 	@Override
 	public void windowOpened(WindowEvent e) {
 		// TODO Auto-generated method stub

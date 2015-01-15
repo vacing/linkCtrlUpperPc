@@ -15,10 +15,7 @@ import javax.swing.JOptionPane;
  * @author Gavin
  */
 public class UdpSocket
-{
-	private DatagramSocket 	ds;
-	private volatile Boolean isUdpSockOpened;
-	
+{	
 	/**
 	 * 初始化udp socket
 	 * @throws SocketException
@@ -28,7 +25,7 @@ public class UdpSocket
 	{
 		ds = new DatagramSocket(portLocal, InetAddress.getByName(ipAddressLocal));
 		isUdpSockOpened = new Boolean(true);
-		ds.setSoTimeout(20);	//receive time out
+//		ds.setSoTimeout(20);	//receive time out
 		System.out.println("Udp 启动成功!");
 	}
 	
@@ -120,4 +117,7 @@ public class UdpSocket
 		ds.close();
 		System.out.println("Udp 关闭成功！");
 	}
+	
+	private DatagramSocket 	ds;
+	private volatile Boolean isUdpSockOpened;
 }

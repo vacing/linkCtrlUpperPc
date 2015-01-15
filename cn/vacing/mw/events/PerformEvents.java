@@ -8,8 +8,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Future;
 
+import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.ConstellationShowRoutine;
 import cn.vacing.mw._main.FinalVar;
+import cn.vacing.mw._main.MainThread;
 import cn.vacing.mw._main.SpectrumShowRoutine;
 import cn.vacing.mw.gui.MainFrame;
 import cn.vacing.mw.perfomace_gui.ConstellationDisplay;
@@ -18,27 +20,23 @@ import cn.vacing.mw.threads.UdpRelatedThreads;
 import cn.vacing.mw.udp.UdpSocket;
 
 public class PerformEvents implements ActionListener, WindowListener {
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		String command = e.getActionCommand();
-
-		if (command.equals(FinalVar.CANCE_PERFORM_START)) {
+		switch(Enum.valueOf(ButtonCommand.class, e.getActionCommand())) {
+		case CANCE_PERFORM_START:
 			cancePerformStart();
-			return;
-		}
-		if (command.equals(FinalVar.CANCE_PERFORM_STOP)) {
+			break;
+		case CANCE_PERFORM_STOP:
 			cancePerformStop();
-			return;
-		}
-		if (command.equals(FinalVar.CONSTELLATION_START)) {
+			break;
+		case CONSTELLATION_START:
 			constellationStart();
-			return;
-		}
-		if (command.equals(FinalVar.CONSTELLATION_STOP)) {
+			break;
+		case CONSTELLATION_STOP:
 			constellationStop();
-			return;
+			break;
+		default:
+			break;
 		}
 	}
 	
@@ -121,10 +119,10 @@ public class PerformEvents implements ActionListener, WindowListener {
 						showSpectrum = false;
 						System.out.println("Timer works" + 
 											"\tIP:" + mainFrame.getFpga1Ip()
-											+"\tPort:" + FinalVar.PORT_2);
-						UdpRelatedThreads.GetSpectrumDataThread gud = urt.new GetSpectrumDataThread(mainFrame.getFpga1Ip(), 
-								FinalVar.PORT_2,
-								FinalVar.CANCE_PERFORM_START_COMMAND, 
+											+"\tPort:" + MainThread.PORT_2);
+						Runnable gud = urt.getGetSpectrumDataThread(mainFrame.getFpga1Ip(), 
+								MainThread.PORT_2,
+								ButtonCommand.CANCE_PERFORM_START.s2fpga, 
 								new SpectrumShowRoutine(spectrumDisplay));
 						urt.submitThread(gud);	
 					}
@@ -134,10 +132,10 @@ public class PerformEvents implements ActionListener, WindowListener {
 						showConstellation = false;
 						System.out.println("Timer works" + 
 								"\tIP:" + mainFrame.getFpga1Ip()
-								+"\tPort:" + FinalVar.PORT_2);
-						UdpRelatedThreads.GetConstellationDataThread gud = urt.new GetConstellationDataThread(mainFrame.getFpga1Ip(), 
-								FinalVar.PORT_2,
-								FinalVar.CONSTELLATION_START_COMMAND, 
+								+"\tPort:" + MainThread.PORT_2);
+						Runnable gud = urt.getGetConstellationDataThread(mainFrame.getFpga1Ip(), 
+								MainThread.PORT_2,
+								ButtonCommand.CONSTELLATION_START.s2fpga, 
 								consShowRoutine);
 						urt.submitThread(gud);	
 					}

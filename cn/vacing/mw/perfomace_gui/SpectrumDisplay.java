@@ -26,6 +26,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
+import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.FinalVar;
 
 public class SpectrumDisplay  extends javax.swing.JDialog {
@@ -186,7 +187,7 @@ public class SpectrumDisplay  extends javax.swing.JDialog {
 
         //图表坐标轴范围设置
         NumberAxis rangeAxis = (NumberAxis) spectrumPlot.getRangeAxis();	//纵轴
-        rangeAxis.setRange(-50.0, 10.0);
+        rangeAxis.setRange(-50.0, 30.0);
         rangeAxis.setAutoRange(false);	//纵坐标不自动变化
         NumberAxis domainAxis = (NumberAxis) spectrumPlot.getDomainAxis();	//横轴
         domainAxis.setRange(0.0, 1024.0);
@@ -422,12 +423,12 @@ public class SpectrumDisplay  extends javax.swing.JDialog {
         showSpectrumStart.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N	//打开频谱显示按钮
         showSpectrumStart.setText("Start");
         showSpectrumStart.addActionListener(performEvents);
-        showSpectrumStart.setActionCommand(FinalVar.CANCE_PERFORM_START);
+        showSpectrumStart.setActionCommand(ButtonCommand.CANCE_PERFORM_START.name());
         showSpectrumStart.setPreferredSize(new java.awt.Dimension(125, 40));
         showSpectrumStop.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N	//关闭频谱显示按钮
         showSpectrumStop.setText("Stop");
         showSpectrumStop.addActionListener(performEvents);
-        showSpectrumStop.setActionCommand(FinalVar.CANCE_PERFORM_STOP);
+        showSpectrumStop.setActionCommand(ButtonCommand.CANCE_PERFORM_STOP.name());
         showSpectrumStop.setPreferredSize(new java.awt.Dimension(125, 40));
         javax.swing.GroupLayout jpnlSpectrumEastLayout = new javax.swing.GroupLayout(jpnlSpectrumEast);
         jpnlSpectrumEast.setLayout(jpnlSpectrumEastLayout);

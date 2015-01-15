@@ -13,9 +13,7 @@ import cn.vacing.mw.threads.UdpRelatedThreads;
 import cn.vacing.mw.udp.*;
 
 public class MainThread {
-	/**
-	 * @param args
-	 */
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		MainFrameEvents mfBe = new MainFrameEvents();
@@ -45,4 +43,12 @@ public class MainThread {
 		}
 	}
 
+	/**
+	 * channel 0 对应端口，fpga上传命令，与pc下发数据
+	 */
+	public static final int PORT_1 = 6001;
+	/**
+	 * channel 1 对应端口，fpga上传数据，与pc下发命令
+	 */
+	public static final int PORT_2 = 6003;
 }

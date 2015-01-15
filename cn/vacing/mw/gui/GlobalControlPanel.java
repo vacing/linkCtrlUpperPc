@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.FinalVar;
 
 
@@ -14,16 +15,19 @@ import cn.vacing.mw._main.FinalVar;
  * @author Gavin
  *
  */
-public class LinkControlPanel extends JPanel{
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8448425938245945473L;
-	public LinkControlPanel(ActionListener buttonEvents)
+public class GlobalControlPanel extends JPanel{
+	public GlobalControlPanel(ActionListener buttonEvents)
 	{
 		this.buttonEvents = buttonEvents;
-		initPanel();
+		setLayout(new GridLayout(0, 2, 10, 10));
+		linkCtrlPanel = linkCtrlPanelInit();
+		performanceShowPanel = performanceShowPanelInit();
+		diCanceCtrPanel = new DiCanceCtrlPanel(buttonEvents);
+		rfCanceCtrPanel = rfCanceCtrPanelInit();
+		add(linkCtrlPanel);
+		add(performanceShowPanel);
+		add(diCanceCtrPanel);
+		add(rfCanceCtrPanel);
 	}
 	
 	
@@ -99,44 +103,31 @@ public class LinkControlPanel extends JPanel{
 		da2Ctrl.setActionCommand(FinalVar.DA2_OPEN);
 	}
 	
-	/**
-	 * 初始化控制面板
-	 */
-	private void initPanel()
-	{
-		setLayout(new GridLayout(0, 2, 10, 10));
-		linkCtrlPanelInit();
-		performanceShowPanelInit();
-		baseCanceCtrPanelInit();
-		rfCanceCtrPanelInit();
-		add(linkCtrlPanel);
-		add(performanceShowPanel);
-		add(baseCanceCtrPanel);
-		add(rfCanceCtrPanel);
-	}
 	
 	/**
 	 * 链路控制
 	 */
-	private void linkCtrlPanelInit() {
-		linkCtrlPanel = new JPanel();
+	private JPanel linkCtrlPanelInit() {
+		JPanel linkCtrlPanel = new JPanel();
 		linkCtrlPanel.setLayout(new GridLayout(1, 0, 0, 0));
 		Border borderTemp = BorderFactory.createEtchedBorder();
 		Border titledBorder = BorderFactory.createTitledBorder(borderTemp, "链路控制");
 		linkCtrlPanel.setBorder(titledBorder);
 		
-		baseCtrlPanelInit();
+		baseCtrlPanel = baseCtrlPanelInit();
 		linkCtrlPanel.add(baseCtrlPanel);
 		
-		rfCtrlPanelInit();
+		rfCtrlPanel = rfCtrlPanelInit();
 		linkCtrlPanel.add(rfCtrlPanel);
+		
+		return linkCtrlPanel;
 	}
 	
 	/**
 	 * 链路控制之射频控制
 	 */
-	private void rfCtrlPanelInit() {
-		rfCtrlPanel = new JPanel();
+	private JPanel rfCtrlPanelInit() {
+		JPanel rfCtrlPanel = new JPanel();
 		rfCtrlPanel.setLayout(new GridBagLayout());
 		Border borderTemp = BorderFactory.createEtchedBorder();
 		rfCtrlPanel.setBorder(borderTemp);
@@ -180,14 +171,16 @@ public class LinkControlPanel extends JPanel{
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridheight = 3;
 		rfCtrlPanel.add(new JLabel(), gbc);
+		
+		return rfCtrlPanel;
 	}
 	
 	/**
 	 * 链路控制之基带控制
 	 */
-	private void baseCtrlPanelInit()
+	private JPanel baseCtrlPanelInit()
 	{
-		baseCtrlPanel = new JPanel();
+		JPanel baseCtrlPanel = new JPanel();
 		baseCtrlPanel.setLayout(new GridLayout(0, 3, 5, 5));
 		Border borderTemp = BorderFactory.createEtchedBorder();
 		baseCtrlPanel.setBorder(borderTemp);
@@ -258,11 +251,13 @@ public class LinkControlPanel extends JPanel{
 		baseCtrlPanel.add(new JLabel());
 		baseCtrlPanel.add(new JLabel());
 		baseCtrlPanel.add(new JLabel());
+		
+		return baseCtrlPanel;
 	}
 	
-	private void rfCanceCtrPanelInit()
+	private JPanel rfCanceCtrPanelInit()
 	{
-		rfCanceCtrPanel = new JPanel();
+		JPanel rfCanceCtrPanel = new JPanel();
 		rfCanceCtrPanel.setLayout(new GridBagLayout());
 		Border borderTemp = BorderFactory.createEtchedBorder();
 		Border titledBorder = BorderFactory.createTitledBorder(borderTemp, "射频干扰抵消控制");
@@ -390,129 +385,13 @@ public class LinkControlPanel extends JPanel{
 //		temp.setBackground(Color.GREEN);
 		temp.setOpaque(true);
 		rfCanceCtrPanel.add(temp, gbc);
+		
+		return rfCanceCtrPanel;
 	}
 	
-	private void baseCanceCtrPanelInit()
+	private JPanel performanceShowPanelInit()
 	{
-		baseCanceCtrPanel = new JPanel();
-		baseCanceCtrPanel.setLayout(new GridBagLayout());
-		Border borderTemp = BorderFactory.createEtchedBorder();
-		Border titledBorder = BorderFactory.createTitledBorder(borderTemp, "数字干扰抵消控制");
-		baseCanceCtrPanel.setBorder(titledBorder);
-		
-		GridBagConstraints gbc;
-		
-//		private JButton baseCanceCtr;
-//		private JTextField freqAverSegs;
-//		private JButton freqAverSegsCtr;
-//		private JTextField forgetFactor;
-//		private JButton forgetFactorCtr;
-		
-		baseCanceCtr = new JButton("打开");
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0; 
-		gbc.gridy = 0;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-//		baseCanceCtr.setActionCommand(FinalVar.RF_BOARD_CTR);
-		baseCanceCtr.addActionListener(buttonEvents);
-		baseCanceCtrPanel.add(baseCanceCtr, gbc);
-		
-		JLabel freqAverSegsLabe = new JLabel("频域平滑段数：");
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0; 
-		gbc.gridy = 1;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(10, 5, 5, 0);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		baseCanceCtrPanel.add(freqAverSegsLabe, gbc);
-		freqAverSegs = new JTextField(10);
-		gbc = new GridBagConstraints();
-		gbc.gridx = 1; 
-		gbc.gridy = 1;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(10, 0, 5, 0);
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		baseCanceCtrPanel.add(freqAverSegs, gbc);
-		freqAverSegsCtr = new JButton("配置");
-		freqAverSegsCtr.addActionListener(buttonEvents);
-		freqAverSegsCtr.setActionCommand(FinalVar.FREQ_AVER_SEGS_CONFIG);
-		gbc = new GridBagConstraints();
-		gbc.gridx = 2; 
-		gbc.gridy = 1;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(10, 0, 5, 0);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		baseCanceCtrPanel.add(freqAverSegsCtr, gbc);
-		
-		JLabel forgetFactorLabe = new JLabel("遗忘因子：");
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0; 
-		gbc.gridy = 2;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(5, 5, 5, 0);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		baseCanceCtrPanel.add(forgetFactorLabe, gbc);
-		forgetFactor = new JTextField(10);
-		gbc = new GridBagConstraints();
-		gbc.gridx = 1; 
-		gbc.gridy = 2;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(5, 0, 5, 0);
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		baseCanceCtrPanel.add(forgetFactor, gbc);
-		forgetFactorCtr = new JButton("配置");
-		gbc = new GridBagConstraints();
-		gbc.gridx = 2; 
-		gbc.gridy = 2;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(5, 0, 5, 0);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		baseCanceCtrPanel.add(forgetFactorCtr, gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0; 
-		gbc.gridy = 3;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.weighty = 0.5;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridwidth = 3;
-		baseCanceCtrPanel.add(new JLabel(), gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 3; 
-		gbc.gridy = 0;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-//		gbc.insets = new Insets(10, 10, 10, 10);
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.5;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridheight = 4;
-		baseCanceCtrPanel.add(new JLabel(), gbc);
-	}
-
-	private void performanceShowPanelInit()
-	{
-		performanceShowPanel = new JPanel();
+		JPanel performanceShowPanel = new JPanel();
 		performanceShowPanel.setLayout(new GridBagLayout());
 		Border borderTemp = BorderFactory.createEtchedBorder();
 		Border titledBorder = BorderFactory.createTitledBorder(borderTemp, "性能分析");
@@ -521,7 +400,7 @@ public class LinkControlPanel extends JPanel{
 		GridBagConstraints gbc;
 		
 		showCancePerformace = new JButton("数字干扰抵消性能");
-		showCancePerformace.setActionCommand(FinalVar.SHOW_CANCE_PERFORM);
+		showCancePerformace.setActionCommand(ButtonCommand.SHOW_CANCE_PERFORM.name());
 		showCancePerformace.addActionListener(buttonEvents);
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0; 
@@ -532,7 +411,7 @@ public class LinkControlPanel extends JPanel{
 		performanceShowPanel.add(showCancePerformace, gbc);
 		
 		showConstellation = new JButton("链路星座图");
-		showConstellation.setActionCommand(FinalVar.SHOW_CONSTELLATION);
+		showConstellation.setActionCommand(ButtonCommand.SHOW_CONSTELLATION.name());
 		showConstellation.addActionListener(buttonEvents);
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0; 
@@ -585,13 +464,15 @@ public class LinkControlPanel extends JPanel{
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridheight = 3;
 		performanceShowPanel.add(new JLabel(), gbc);
+		
+		return performanceShowPanel;
 	}
 
 	//4 parts of this panel
-	private JPanel linkCtrlPanel;
-	private JPanel performanceShowPanel;	
-	private JPanel baseCanceCtrPanel;
-	private JPanel rfCanceCtrPanel;
+	public final JPanel linkCtrlPanel;
+	public final JPanel performanceShowPanel;	
+	public final DiCanceCtrlPanel diCanceCtrPanel;
+	public final JPanel rfCanceCtrPanel;
 
 	//全部按钮事件
 	private ActionListener buttonEvents;
@@ -618,12 +499,7 @@ public class LinkControlPanel extends JPanel{
 	private JButton showConstellation;
 	private JTextField blockErrorRate;
 	
-	//数字干扰抵消面板
-	private JButton baseCanceCtr;
-	private JTextField freqAverSegs;
-	private JButton freqAverSegsCtr;
-	private JTextField forgetFactor;
-	private JButton forgetFactorCtr;
+
 	
 	
 	//射频干扰抵消面板
@@ -641,5 +517,5 @@ public class LinkControlPanel extends JPanel{
 	private JButton searchStop;
 	private JButton searchReset;
 	
-	
+	private static final long serialVersionUID = -8448425938245945473L;	
 }

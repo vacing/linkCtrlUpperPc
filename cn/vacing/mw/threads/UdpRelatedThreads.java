@@ -9,9 +9,42 @@ import cn.vacing.mw.udp.UdpSocket;
 import cn.vacing.mw.ztest.TestSpectrumDataGet;
 
 public class UdpRelatedThreads {
-	private UdpSocket udpSocket;	
-	private ExecutorService exec;
 
+	/**
+	 * 只向发送UDP命令
+	 * @param destIP
+	 * @param destPort
+	 * @param command
+	 * @return
+	 */
+	public Runnable getSendCommandThread(String destIP, int destPort, int command) {
+		return new SendCommandThread(destIP, destPort, command);
+	}
+	
+	/**
+	 * 获取频谱数据。发送命令，也接收数据
+	 * @param destIP
+	 * @param destPort
+	 * @param command
+	 * @param consumer
+	 * @return
+	 */
+	public Runnable getGetSpectrumDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+		return new GetSpectrumDataThread(destIP, destPort, command, consumer);
+	}
+	
+	/**
+	 * 获取星座图数据。发送命令，也接收数据
+	 * @param destIP
+	 * @param destPort
+	 * @param command
+	 * @param consumer
+	 * @return
+	 */
+	public Runnable getGetConstellationDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+		return new GetConstellationDataThread(destIP, destPort, command, consumer);
+	}
+		
 	public UdpRelatedThreads(UdpSocket udpSocket, ExecutorService exec) {
 		this.udpSocket = udpSocket;
 		this.exec = exec;
@@ -26,12 +59,12 @@ public class UdpRelatedThreads {
 	 * @author usdr
 	 *
 	 */
-	public class SendCommandThread implements Runnable {
+	private class SendCommandThread implements Runnable {
 		private String destIP;
 		private int destPort;
 		private int command;
 
-		public SendCommandThread(String destIP, int destPort, int command) {
+		private SendCommandThread(String destIP, int destPort, int command) {
 			this.destIP = destIP;
 			this.destPort = destPort;
 			this.command = command;
@@ -39,12 +72,16 @@ public class UdpRelatedThreads {
 
 		@Override
 		public void run() {
-			synchronized (udpSocket) {
-//				System.out.printf("%x\n", command);
-				udpSocket.sendUdpMesg(destIP, 					// 目标IP
-						destPort, 								// 目标端口
-						DataConvert.intToBytesArray(command)); 	// 控制命令
-			}
+			System.out.println("destIP:" + destIP
+					+ "\tdestPort:" + destPort
+					+ "\tcommand:"	+ Integer.toHexString(command)
+		);
+			
+//			synchronized (udpSocket) {
+//				udpSocket.sendUdpMesg(destIP, 					// 目标IP
+//						destPort, 								// 目标端口
+//						DataConvert.intToBytesArray(command)); 	// 控制命令
+//			}
 			try {
 				Thread.sleep(2);							//防止命令发送过快
 			} catch (InterruptedException e) {
@@ -57,7 +94,7 @@ public class UdpRelatedThreads {
 	 * @author usdr
 	 *
 	 */
-	public class GetSpectrumDataThread implements Runnable {
+	private class GetSpectrumDataThread implements Runnable {
 		private String destIP;			//目标IP
 		private int destPort;			//目标端口
 		private int command;			//命令
@@ -65,7 +102,7 @@ public class UdpRelatedThreads {
 		private UdpDataConsumer consumer;				//数据消费者
 		private boolean receError = false;
 
-		public GetSpectrumDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+		private GetSpectrumDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
 			this.destIP = destIP;
 			this.destPort = destPort;
 			this.command = command;
@@ -135,7 +172,7 @@ public class UdpRelatedThreads {
 	 * @author Gavin
 	 *
 	 */
-	public class GetConstellationDataThread implements Runnable {
+	private class GetConstellationDataThread implements Runnable {
 		private String destIP;			//目标IP
 		private int destPort;			//目标端口
 		private int command;			//命令
@@ -143,7 +180,7 @@ public class UdpRelatedThreads {
 		private UdpDataConsumer consumer;				//数据消费者
 		private boolean receError = false;	//接收数据错误标识
 
-		public GetConstellationDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+		private GetConstellationDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
 			this.destIP = destIP;
 			this.destPort = destPort;
 			this.command = command;
@@ -180,4 +217,7 @@ public class UdpRelatedThreads {
 			}
 		}
 	}
+	
+	private UdpSocket udpSocket;	
+	private ExecutorService exec;
 }

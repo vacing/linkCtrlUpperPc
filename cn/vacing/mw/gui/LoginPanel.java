@@ -15,8 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import cn.vacing.mw._main.FinalVar;
-
+import cn.vacing.mw._main.ButtonCommand;
 
 /**
  * 登陆界面，使用半透明蒙版
@@ -138,7 +137,7 @@ public class LoginPanel extends javax.swing.JPanel {
 		add(portLocal, gridBagConstraints);
 
 		confirmButton.setText("确认");
-		confirmButton.setActionCommand(FinalVar.LOG_IN_CONFIRM);
+		confirmButton.setActionCommand(ButtonCommand.LOG_IN_CONFIRM.name());
 		confirmButton.addActionListener(buttonEvents);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.insets = new Insets(0, 0, 0, 40);

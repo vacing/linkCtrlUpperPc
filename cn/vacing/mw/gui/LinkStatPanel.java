@@ -38,11 +38,11 @@ public class LinkStatPanel extends JPanel {
 	 * @param nameStat
 	 */
 	@SuppressWarnings("unchecked")
-	public void initTable(ArrayList<LinkStat> linkStat )
+	public void initTable(ArrayList<LinkStatParam> linkStat )
 	{
 		// 获取用户信息表格组件的数据模型对象
 		Vector<Vector<String>> dataVector = model.getDataVector();
-		for(LinkStat ls : linkStat )
+		for(LinkStatParam ls : linkStat )
 		{
 			Vector<String> row = new Vector<String>(); // 使用用户信息创建单行数据的向量
 			row.add(ls.getName());
