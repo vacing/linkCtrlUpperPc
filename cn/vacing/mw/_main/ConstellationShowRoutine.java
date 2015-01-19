@@ -1,5 +1,9 @@
 package cn.vacing.mw._main;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +34,22 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 		if(currentBagNo % BAGS == 0) {
 			complexList = new ArrayList<Complex>(CONSTELLATION_LEN * 2);	//留出1倍余量，防止数据过多
 		}
+		
+//		//output data, simulate in matlab
+//		PrintWriter out;
+//		try {
+//			out = new PrintWriter(new BufferedWriter(new FileWriter("constallation_byte.txt", true)));
+//			for(int i = 0; i < length; i++) {
+//				out.printf("%x", data[i]);
+//				if(i % BYTE_CNT == BYTE_CNT-1) {
+//					out.println();
+//				}
+//			}	
+//			out.close();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		
 		double[] doubleArr = DataConvert.byteArr2DoubleArr(data, length, BYTE_CNT, FRACTION_NUM);
 		List<Complex> compTemp = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(doubleArr, doubleArr.length));
