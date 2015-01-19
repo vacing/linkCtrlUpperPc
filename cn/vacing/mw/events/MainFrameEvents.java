@@ -77,35 +77,27 @@ public class MainFrameEvents implements ActionListener, WindowListener {
 		
 		//数字干扰抵消
 		case DIR_CURR_CORRECT:		//直流偏置校准
-			System.out.println("digital cancellation-1");
 			digitCanceEvents.dirCurrCorr();
 			break;
 		case DI_CANCE_RESET_START:	//开始复位
-			System.out.println("digital cancellation-2");
 			digitCanceEvents.diCanceResetStart();
 			break;
 		case DI_CANCE_RESET_STOP:	//停止复位
-			System.out.println("digital cancellation-2.5");
 			digitCanceEvents.diCanceResetStop();
 			break;
 		case DI_PARAM_UP_START:		//开始参数更新
-			System.out.println("digital cancellation-3");
 			digitCanceEvents.paramUpdateStart();
 			break;
 		case DI_PARAM_UP_STOP:		//停止参数更新
-			System.out.println("digital cancellation-3.5");
 			digitCanceEvents.paramUpdateStop();
 			break;
 		case DI_RECE_TIME_DELAY:	//接收时延配置
-			System.out.println("digital cancellation-4");
 			digitCanceEvents.receTimeDelayConf();
 			break;
 		case DI_CATCH_LENGTH:		//缓存长度配置
-			System.out.println("digital cancellation-5");
 			digitCanceEvents.catchLengthConf();
 			break;
 		case DI_FEEDBACK_TIME_DELAY://反馈延时配置
-			System.out.println("digital cancellation-6");
 			digitCanceEvents.feedbackTimeDelayConf();
 			break;
 			

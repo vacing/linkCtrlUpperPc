@@ -116,28 +116,36 @@ public class PerformEvents implements ActionListener, WindowListener {
 			public void run() {
 				synchronized (showSpectrum) {
 					if(showSpectrum) {	//频谱显示
-//						showSpectrum = false;
-						System.out.println("Timer works" + 
-											"\tIP:" + mainFrame.getFpga1Ip()
-											+"\tPort:" + MainThread.PORT_2);
-						Callable<Integer> gud = urt.getGetSpectrumDataThread(mainFrame.getFpga1Ip(), 
-								MainThread.PORT_2,
-								ButtonCommand.CANCE_PERFORM_START.s2fpga, 
-								new SpectrumShowRoutine(spectrumDisplay));
-						future = urt.submitThread(gud);	
+						if(future == null || future.isDone()) {	//首次进入，或UDP未阻塞
+	//						showSpectrum = false;
+							System.out.println("Timer works" + 
+												"\tIP:" + mainFrame.getFpga1Ip()
+												+"\tPort:" + MainThread.PORT_2);
+							Callable<Integer> gud = urt.getGetSpectrumDataThread(mainFrame.getFpga1Ip(), 
+									MainThread.PORT_2,
+									ButtonCommand.CANCE_PERFORM_START.s2fpga, 
+									new SpectrumShowRoutine(spectrumDisplay));
+							future = urt.submitThread(gud);	
+						} else {
+							System.out.println("\nThread is Undone!!");
+						}
 					}
 				}
 				synchronized (showConstellation) {
 					if(showConstellation) {	//星座图显示
-//						showConstellation = false;
-						System.out.println("Timer works" + 
-								"\tIP:" + mainFrame.getFpga1Ip()
-								+"\tPort:" + MainThread.PORT_2);
-						Callable<Integer> gud = urt.getGetConstellationDataThread(mainFrame.getFpga1Ip(), 
-								MainThread.PORT_2,
-								ButtonCommand.CONSTELLATION_START.s2fpga, 
-								consShowRoutine);
-						urt.submitThread(gud);	
+						if(future == null || future.isDone()) {		//首次进入，或UDP未阻塞
+	//						showConstellation = false;
+							System.out.println("Timer works" + 
+									"\tIP:" + mainFrame.getFpga1Ip()
+									+"\tPort:" + MainThread.PORT_2);
+							Callable<Integer> gud = urt.getGetConstellationDataThread(mainFrame.getFpga1Ip(), 
+									MainThread.PORT_2,
+									ButtonCommand.CONSTELLATION_START.s2fpga, 
+									consShowRoutine);
+							future = urt.submitThread(gud);	
+						} else {
+							System.out.println("\nThread is Undone!!");
+						}
 					}
 				}
 			}
