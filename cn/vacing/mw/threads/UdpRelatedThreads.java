@@ -77,11 +77,11 @@ public class UdpRelatedThreads {
 					+ "\tcommand:"	+ Integer.toHexString(command)
 		);
 			
-//			synchronized (udpSocket) {
-//				udpSocket.sendUdpMesg(destIP, 					// 目标IP
-//						destPort, 								// 目标端口
-//						DataConvert.intToBytesArray(command)); 	// 控制命令
-//			}
+			synchronized (udpSocket) {
+				udpSocket.sendUdpMesg(destIP, 					// 目标IP
+						destPort, 								// 目标端口
+						DataConvert.intToBytesArray(command)); 	// 控制命令
+			}
 			try {
 				Thread.sleep(2);							//防止命令发送过快
 			} catch (InterruptedException e) {
@@ -159,7 +159,7 @@ public class UdpRelatedThreads {
 						receError = true;
 					}
 	//				System.out.println("Received:  " + temp  + "\tbagsCount: " + bagsCount);
-					if (temp <= 0) {//udp未打开（-1）或接收超时（0）
+					if (temp <= 0) {//udp未打开（-1）或接收超时（-1）
 						receError = true;
 					}
 				}
@@ -210,7 +210,7 @@ public class UdpRelatedThreads {
 						receError = true;
 					}
 	//				System.out.println("Received:  " + temp + "\tbagsCount: " + bagsCount);
-					if (temp <= 0) {	//udp未打开（-1）或接收超时（0）
+					if (temp <= 0) {	//udp未打开（-1）或接收超时（-1）
 						receError = true;
 					}
 				}

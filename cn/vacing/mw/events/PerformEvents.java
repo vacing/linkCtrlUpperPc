@@ -116,7 +116,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 			public void run() {
 				synchronized (showSpectrum) {
 					if(showSpectrum) {	//频谱显示
-						showSpectrum = false;
+//						showSpectrum = false;
 						System.out.println("Timer works" + 
 											"\tIP:" + mainFrame.getFpga1Ip()
 											+"\tPort:" + MainThread.PORT_2);
@@ -129,7 +129,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 				}
 				synchronized (showConstellation) {
 					if(showConstellation) {	//星座图显示
-						showConstellation = false;
+//						showConstellation = false;
 						System.out.println("Timer works" + 
 								"\tIP:" + mainFrame.getFpga1Ip()
 								+"\tPort:" + MainThread.PORT_2);
