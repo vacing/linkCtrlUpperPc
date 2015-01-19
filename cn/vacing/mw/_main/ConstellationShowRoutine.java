@@ -6,11 +6,9 @@ import java.util.List;
 
 import cn.vacing.mw.exception.DataLenUnproperException;
 import cn.vacing.mw.perfomace_gui.ConstellationDisplay;
-import cn.vacing.mw.perfomace_gui.SpectrumDisplay;
 import cn.vacing.mw.threads.UdpDataConsumer;
 import cn.vacing.mw.tools.Complex;
 import cn.vacing.mw.tools.DataConvert;
-import cn.vacing.mw.tools.FFT;
 
 public class ConstellationShowRoutine extends UdpDataConsumer {
 	
@@ -33,7 +31,7 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 			complexList = new ArrayList<Complex>(COMSTELLATION_LEN * 2);	//留出1倍余量，防止数据过多
 		}
 		
-		double[] doubleArr = DataConvert.byteArr2DoubleArr(data, length, 3, 17);	//24Q17
+		double[] doubleArr = DataConvert.byteArr2DoubleArr(data, length, BYTE_CNT, FRACTION_NUM);
 		List<Complex> compTemp = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(doubleArr, doubleArr.length));
 		complexList.addAll(compTemp);
 
@@ -130,10 +128,12 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 //		
 //	}
 
-	
-	private static final int BAGS = 5;
-	private static final int CIRCUMSTANCES = 1;
+	private static final int BAGS = 5;		//每种曲线或点的包数
+	private static final int CIRCUMSTANCES = 1;	//曲线条数或点的种数
 	private static final int COMSTELLATION_LEN = 1024;		//每次更新星座图的数据长度
+	//24Q17
+	private static final int BYTE_CNT = 3;	//字节数， *8等于bit数
+	private static final int FRACTION_NUM = 17;	//小数位数
 	
 	private ConstellationDisplay constellationDisplay;
 	private volatile int currentBagNo;		//数据包编号, 0 - (bagsNeeded - 1)
