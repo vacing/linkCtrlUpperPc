@@ -6,8 +6,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-
 import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.ConstellationShowRoutine;
 import cn.vacing.mw._main.FinalVar;
@@ -120,11 +120,11 @@ public class PerformEvents implements ActionListener, WindowListener {
 						System.out.println("Timer works" + 
 											"\tIP:" + mainFrame.getFpga1Ip()
 											+"\tPort:" + MainThread.PORT_2);
-						Runnable gud = urt.getGetSpectrumDataThread(mainFrame.getFpga1Ip(), 
+						Callable<Integer> gud = urt.getGetSpectrumDataThread(mainFrame.getFpga1Ip(), 
 								MainThread.PORT_2,
 								ButtonCommand.CANCE_PERFORM_START.s2fpga, 
 								new SpectrumShowRoutine(spectrumDisplay));
-						urt.submitThread(gud);	
+						future = urt.submitThread(gud);	
 					}
 				}
 				synchronized (showConstellation) {
@@ -133,7 +133,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 						System.out.println("Timer works" + 
 								"\tIP:" + mainFrame.getFpga1Ip()
 								+"\tPort:" + MainThread.PORT_2);
-						Runnable gud = urt.getGetConstellationDataThread(mainFrame.getFpga1Ip(), 
+						Callable<Integer> gud = urt.getGetConstellationDataThread(mainFrame.getFpga1Ip(), 
 								MainThread.PORT_2,
 								ButtonCommand.CONSTELLATION_START.s2fpga, 
 								consShowRoutine);
@@ -154,7 +154,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 	private TimerTask spectrumTimerTask;
 	private volatile Boolean showSpectrum = false;
 	private volatile Boolean showConstellation = false;
-	private Future<?> spectrumFuture;
+	private Future<Integer> future;
 	
 	@Override
 	public void windowOpened(WindowEvent e) {

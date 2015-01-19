@@ -1,12 +1,12 @@
 package cn.vacing.mw.threads;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import cn.vacing.mw.exception.DataLenUnproperException;
 import cn.vacing.mw.tools.DataConvert;
 import cn.vacing.mw.udp.UdpSocket;
-import cn.vacing.mw.ztest.TestSpectrumDataGet;
 
 public class UdpRelatedThreads {
 
@@ -29,7 +29,7 @@ public class UdpRelatedThreads {
 	 * @param consumer
 	 * @return
 	 */
-	public Runnable getGetSpectrumDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+	public Callable<Integer> getGetSpectrumDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
 		return new GetSpectrumDataThread(destIP, destPort, command, consumer);
 	}
 	
@@ -41,7 +41,7 @@ public class UdpRelatedThreads {
 	 * @param consumer
 	 * @return
 	 */
-	public Runnable getGetConstellationDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
+	public Callable<Integer> getGetConstellationDataThread(String destIP, int destPort, int command, UdpDataConsumer consumer) {
 		return new GetConstellationDataThread(destIP, destPort, command, consumer);
 	}
 		
@@ -50,14 +50,16 @@ public class UdpRelatedThreads {
 		this.exec = exec;
 	}
 	
-	public Future<?> submitThread(Runnable task) {
-		Future<?> f = exec.submit(task);
-		return f;
+
+	public Future<Integer> submitThread(Callable<Integer> gud) {
+		return exec.submit(gud);
+	}
+	public void submitThread(Runnable gud) {
+		exec.submit(gud);
 	}
 	/**
 	 * 只发送命令
-	 * @author usdr
-	 *
+	 * @author Gavin
 	 */
 	private class SendCommandThread implements Runnable {
 		private String destIP;
@@ -91,10 +93,10 @@ public class UdpRelatedThreads {
 	}
 	/**
 	 * 发送命令，并接收显示频谱的数据
-	 * @author usdr
+	 * @author Gavin
 	 *
 	 */
-	private class GetSpectrumDataThread implements Runnable {
+	private class GetSpectrumDataThread implements Callable<Integer> {
 		private String destIP;			//目标IP
 		private int destPort;			//目标端口
 		private int command;			//命令
@@ -111,7 +113,8 @@ public class UdpRelatedThreads {
 		}
 		
 		@Override
-		public void run() {
+		public Integer call() {
+			int packageCount = 0;
 			//抵消前数据上传
 			synchronized (udpSocket) {
 				udpSocket.sendUdpMesg(destIP, 					// 目标IP
@@ -164,6 +167,7 @@ public class UdpRelatedThreads {
 					}
 				}
 			}
+			return packageCount;
 		}
 	}
 	
@@ -172,7 +176,7 @@ public class UdpRelatedThreads {
 	 * @author Gavin
 	 *
 	 */
-	private class GetConstellationDataThread implements Runnable {
+	private class GetConstellationDataThread implements Callable<Integer> {
 		private String destIP;			//目标IP
 		private int destPort;			//目标端口
 		private int command;			//命令
@@ -189,7 +193,8 @@ public class UdpRelatedThreads {
 		}
 		
 		@Override
-		public void run() {
+		public Integer call() {
+			int packageCount = 0;
 			synchronized (udpSocket) {
 				udpSocket.sendUdpMesg(destIP, 					// 目标IP
 						destPort, 								// 目标端口
@@ -215,6 +220,7 @@ public class UdpRelatedThreads {
 					}
 				}
 			}
+			return packageCount;
 		}
 	}
 	
