@@ -28,7 +28,7 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 		 * 在接收第0号包（第一种情况的第1包）和BAGS号包（第二种情况的第1包）前重置临时存储
 		 */
 		if(currentBagNo % BAGS == 0) {
-			complexList = new ArrayList<Complex>(COMSTELLATION_LEN * 2);	//留出1倍余量，防止数据过多
+			complexList = new ArrayList<Complex>(CONSTELLATION_LEN * 2);	//留出1倍余量，防止数据过多
 		}
 		
 		double[] doubleArr = DataConvert.byteArr2DoubleArr(data, length, BYTE_CNT, FRACTION_NUM);
@@ -36,8 +36,8 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 		complexList.addAll(compTemp);
 
 		if(currentBagNo == bagsNeeded - 1) {
-			if(complexList.size() >= COMSTELLATION_LEN) {
-				complexList = DataConvert.trim2Size(complexList, COMSTELLATION_LEN);
+			if(complexList.size() >= CONSTELLATION_LEN) {
+				complexList = DataConvert.trim2Size(complexList, CONSTELLATION_LEN);
 				complexList.toArray(complexArr);
 				double[][] showTemp = complexConvert(complexArr);
 				append2DataShow(showTemp);
@@ -130,7 +130,7 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 
 	private static final int BAGS = 5;		//每种曲线或点的包数
 	private static final int CIRCUMSTANCES = 1;	//曲线条数或点的种数
-	private static final int COMSTELLATION_LEN = 1024;		//每次更新星座图的数据长度
+	private static final int CONSTELLATION_LEN = 1024;		//每次更新星座图的数据长度
 	//24Q17
 	private static final int BYTE_CNT = 3;	//字节数， *8等于bit数
 	private static final int FRACTION_NUM = 17;	//小数位数
@@ -138,7 +138,7 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 	private ConstellationDisplay constellationDisplay;
 	private volatile int currentBagNo;		//数据包编号, 0 - (bagsNeeded - 1)
 	private ArrayList<Complex> complexList;		//数据临时存放
-	private Complex[] complexArr = new Complex[COMSTELLATION_LEN];		//数据收集完成后，存放最终处理的源数据形式
-	private static double[][] dataShow = new double[2][4*COMSTELLATION_LEN];	//滑动存放星座图显示数据。
+	private Complex[] complexArr = new Complex[CONSTELLATION_LEN];		//数据收集完成后，存放最终处理的源数据形式
+	private static double[][] dataShow = new double[2][4*CONSTELLATION_LEN];	//滑动存放星座图显示数据。
 
 }
