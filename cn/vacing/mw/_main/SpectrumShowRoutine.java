@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import cn.vacing.mw.exception.DataLenUnproperException;
@@ -29,7 +28,6 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 		this.spectrumDisplay = spectrumDisplay;
 	}
 	
-	private int byteCount  = 0;
 	@Override
 	public synchronized void dataConsumer(int length, byte[] data) throws DataLenUnproperException{
 		/**
@@ -39,13 +37,13 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 			complexList = new ArrayList<Complex>(SPECTRUM_LEN * 2);	//留出1倍余量，防止数据过多
 		}
 		
-		//output data, simulate in matlab
+//		//output data, simulate in matlab
 //		PrintWriter out;
 //		try {
-//			out = new PrintWriter(new BufferedWriter(new FileWriter("byte.txt", true)));
+//			out = new PrintWriter(new BufferedWriter(new FileWriter("spectrum_byte.txt", true)));
 //			for(int i = 0; i < length; i++) {
 //				out.printf("%x", data[i]);
-//				if(i % 3 == 2) {
+//				if(i % BYTE_CNT == BYTE_CNT-1) {
 //					out.println();
 //				}
 //			}	
@@ -56,10 +54,9 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 //		}
 		
 		switch(currentBagNo / BAGS) {
-			case 0:	//抵消前
-			{		
-				double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, 3, 21);	//24Q21
-				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(tempDouble, tempDouble.length));
+			case 0:	{//抵消前
+				double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, BYTE_CNT, FRACTION_NUM);
+				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.double2Complex(tempDouble));
 				complexList.addAll(tempComplex);
 
 				if(currentBagNo == BAGS - 1) {
@@ -84,10 +81,9 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 				}
 				break;
 			}
-			case 1:	//抵消后
-			{
-				double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, 3, 21);	//24Q21
-				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.doubleArr2ComplexArr(tempDouble, tempDouble.length));
+			case 1:	{//抵消后
+				double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, BYTE_CNT, FRACTION_NUM);	
+				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.double2Complex(tempDouble));
 				complexList.addAll(tempComplex);
 //				System.out.println("complexList: " + complexList.size());
 				if(currentBagNo == 2 * BAGS - 1) {
@@ -140,14 +136,13 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 	}
 	
 	/**
-	 * 获取平均功率
+	 * 获取平均功率值
 	 */
 	private double getMean(double[] dArr) {
 		double mean = 0;
 		for(int i = 0; i < dArr.length; i++) {
 			mean += dArr[i];
 		}
-		
 		return mean / dArr.length;
 	}
 	
@@ -161,8 +156,11 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 	}
 	
 	private static final int SPECTRUM_LEN = 1024;
-	private static final int BAGS = 5;
-	private static final int CIRCUMSTANCES = 2;
+	private static final int BAGS = 2;	//每种曲线或点的包数
+	private static final int CIRCUMSTANCES = 2;	//曲线条数或点的种数
+	//16Q12
+	private static final int BYTE_CNT = 2;	//字节数， *8等于bit数
+	private static final int FRACTION_NUM = 12;	//小数位数
 	
 	private SpectrumDisplay spectrumDisplay;
 	private volatile int currentBagNo = 0;	//收到的数据包的编号
