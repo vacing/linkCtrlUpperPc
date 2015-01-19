@@ -105,10 +105,11 @@ public class DataConvert {
 	 * @param length
 	 *            : valid length of double array
 	 * @return
+	 * @throws DataLenUnproperException 
 	 */
-	public static Complex[] doubleArr2ComplexArr(double[] d, int length) {
+	public static Complex[] doubleArr2ComplexArr(double[] d, int length) throws DataLenUnproperException {
 		if (length % 2 != 0) {
-			System.out.println("length is not apllicable.");
+			throw new DataLenUnproperException();
 		}
 
 		Complex[] complexArr = new Complex[length / 2];
@@ -119,6 +120,36 @@ public class DataConvert {
 		}
 
 		return complexArr;
+	}
+	
+	/**
+	 * covert double array to Complex array, 
+	 * given data as real part, and imagine part is 0.
+	 * 
+	 * @param d: double array
+	 * @return	parsed complex data
+	 * @throws DataLenUnproperException 
+	 */
+	public static Complex[] double2Complex(double[] d) {
+		Complex[] complexArr = new Complex[d.length];
+		Complex com;
+		for (int i = 0; i < d.length; i++) {
+			com = new Complex(d[i], 0);
+			complexArr[i] = com;
+		}
+		return complexArr;
+	}
+	
+	/**
+	 * covert a double data  to Complex data, 
+	 * given data is real part, and imagine part is 0.
+	 * 
+	 * @param d: double array
+	 * @return	parsed complex data
+	 * @throws DataLenUnproperException 
+	 */
+	public static Complex double2Complex(double d) {
+		return new Complex(d, 0);
 	}
 
 	/**
