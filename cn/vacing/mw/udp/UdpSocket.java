@@ -25,7 +25,7 @@ public class UdpSocket
 	{
 		ds = new DatagramSocket(portLocal, InetAddress.getByName(ipAddressLocal));
 		isUdpSockOpened = new Boolean(true);
-//		ds.setSoTimeout(20);	//receive time out
+		ds.setSoTimeout(5000);	//receive time out
 		System.out.println("Udp 启动成功!");
 	}
 	
