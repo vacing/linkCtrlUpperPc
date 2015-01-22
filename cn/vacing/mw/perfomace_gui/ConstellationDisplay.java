@@ -29,7 +29,7 @@ import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw.tools.Complex;
 
-public class ConstellationDisplay  extends javax.swing.JDialog {
+public class ConstellationDisplay  extends javax.swing.JFrame {
 	
 //    private MainFrame mfGui;							//父窗体
     private JFreeChart constellationChart;              //星座图显示图表

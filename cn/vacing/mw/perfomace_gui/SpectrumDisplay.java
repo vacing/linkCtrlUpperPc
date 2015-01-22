@@ -29,7 +29,7 @@ import org.jfree.ui.RectangleInsets;
 import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.FinalVar;
 
-public class SpectrumDisplay  extends javax.swing.JDialog {
+public class SpectrumDisplay  extends javax.swing.JFrame {
 	
 //    private MainFrame mfGui;							//父窗体
     private JFreeChart spectrumChart;               	//频谱显示图表
