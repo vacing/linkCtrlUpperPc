@@ -124,12 +124,12 @@ public class MainFrame extends JFrame {
 	 * 获取设定fpga1和2的IP地址
 	 * @return
 	 */
-	public String getFpga1Ip() {
-		return fpga1Ip;
+	public String getFpga0Ip() {
+		return fpga0Ip;
 	}
 
-	public String getFpga2Ip() {
-		return fpga2Ip;
+	public String getFpga1Ip() {
+		return fpga1Ip;
 	}
 	public String getIpLocal() {
 		return ipLocal;
@@ -202,15 +202,15 @@ public class MainFrame extends JFrame {
 	 * 登陆成功的界面处理
 	 */
 	public void loginSuccess() {
+		fpga0Ip = linp.getFpga0Ip();
 		fpga1Ip = linp.getFpga1Ip();
-		fpga2Ip = linp.getFpga2Ip();
 		ipLocal = linp.getIPLocal();
 		portLocal = linp.getPortLocal();
 		linp.setVisible(false);
 	}
 
+	private String fpga0Ip;
 	private String fpga1Ip;
-	private String fpga2Ip;
 	private String ipLocal;
 	private int portLocal;
 
