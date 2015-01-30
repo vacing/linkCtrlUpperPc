@@ -37,10 +37,10 @@ public class LoginPanel extends javax.swing.JPanel {
 	private void initComponents() {
 		java.awt.GridBagConstraints gridBagConstraints;
 
+		fpga0IpLab = new javax.swing.JLabel();
+		fpga0Ip = new javax.swing.JTextField();
 		fpga1IpLab = new javax.swing.JLabel();
 		fpga1Ip = new javax.swing.JTextField();
-		fpga2IpLab = new javax.swing.JLabel();
-		fpga2Ip = new javax.swing.JTextField();
 		confirmButton = new javax.swing.JButton();
 		closeButton = new javax.swing.JButton();
 
@@ -54,31 +54,31 @@ public class LoginPanel extends javax.swing.JPanel {
 		setLayout(new java.awt.GridBagLayout());
 		
 		charFont = new Font("隶书", Font.BOLD, 20);
-		fpga1IpLab.setFont(charFont);
-		fpga1IpLab.setForeground(new java.awt.Color(255, 255, 255));
-		fpga1IpLab.setText("FPGA1 IP：");
+		fpga0IpLab.setFont(charFont);
+		fpga0IpLab.setForeground(new java.awt.Color(255, 255, 255));
+		fpga0IpLab.setText("FPGA0 IP：");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		add(fpga1IpLab, gridBagConstraints);
+		add(fpga0IpLab, gridBagConstraints);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.ipady = -5;
 		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
-		fpga1Ip.setFont(new Font("隶书", Font.BOLD, 20));
-		fpga1Ip.setText(IP1);
-		add(fpga1Ip, gridBagConstraints);
+		fpga0Ip.setFont(new Font("隶书", Font.BOLD, 20));
+		fpga0Ip.setText(IP0);
+		add(fpga0Ip, gridBagConstraints);
 
-		fpga2IpLab.setFont(new Font("隶书", Font.BOLD, 20));
-		fpga2IpLab.setForeground(java.awt.Color.white);
-		fpga2IpLab.setText("FPGA2 IP：");
+		fpga1IpLab.setFont(new Font("隶书", Font.BOLD, 20));
+		fpga1IpLab.setForeground(java.awt.Color.white);
+		fpga1IpLab.setText("FPGA1 IP：");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
-		add(fpga2IpLab, gridBagConstraints);
+		add(fpga1IpLab, gridBagConstraints);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.ipady = -5;
@@ -87,9 +87,9 @@ public class LoginPanel extends javax.swing.JPanel {
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.insets = new java.awt.Insets(3, 0, 3, 0);
-		fpga2Ip.setFont(new Font("隶书", Font.BOLD, 20));
-		fpga2Ip.setText(IP2);
-		add(fpga2Ip, gridBagConstraints);
+		fpga1Ip.setFont(new Font("隶书", Font.BOLD, 20));
+		fpga1Ip.setText(IP1);
+		add(fpga1Ip, gridBagConstraints);
 		
 		JLabel ipLocalLab = new JLabel("  本地IP：");
 		ipLocalLab.setFont(new Font("隶书", Font.BOLD, 20));
@@ -167,19 +167,19 @@ public class LoginPanel extends javax.swing.JPanel {
 	}
 
 	/**
+	 * 获取登录时设定的fpga0的ip地址
+	 * @return
+	 */
+	public String getFpga0Ip() {
+		return fpga0Ip.getText();
+	}
+	
+	/**
 	 * 获取登录时设定的fpga1的ip地址
 	 * @return
 	 */
 	public String getFpga1Ip() {
 		return fpga1Ip.getText();
-	}
-	
-	/**
-	 * 获取登录时设定的fpga2的ip地址
-	 * @return
-	 */
-	public String getFpga2Ip() {
-		return fpga2Ip.getText();
 	}
 	
 	/**
@@ -211,18 +211,18 @@ public class LoginPanel extends javax.swing.JPanel {
 		super.paintComponent(g2); // 执行超类的组件绘制方法
 	}
 	
-	private static final String IP1 = "192.168.1.29";
-	private static final String IP2 = "192.168.1.34";
+	private static final String IP0 = "192.168.1.29";
+	private static final String IP1 = "192.168.1.31";
 	private static final String IP_LOCAL = "192.168.1.112";
 	
 	private ActionListener buttonEvents;
 	
 	private Font charFont;
 	private javax.swing.JButton closeButton;
+	private javax.swing.JTextField fpga0Ip;
 	private javax.swing.JTextField fpga1Ip;
-	private javax.swing.JTextField fpga2Ip;
+	private javax.swing.JLabel fpga0IpLab;
 	private javax.swing.JLabel fpga1IpLab;
-	private javax.swing.JLabel fpga2IpLab;
 	private javax.swing.JButton confirmButton;
 	private JTextField ipLocal;
 	private JTextField portLocal;

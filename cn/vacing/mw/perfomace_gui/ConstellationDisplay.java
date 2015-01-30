@@ -29,7 +29,7 @@ import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw.tools.Complex;
 
-public class ConstellationDisplay  extends javax.swing.JDialog {
+public class ConstellationDisplay  extends javax.swing.JFrame {
 	
 //    private MainFrame mfGui;							//父窗体
     private JFreeChart constellationChart;              //星座图显示图表
@@ -93,7 +93,7 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize();
 		setBounds((screenSize.width - 1200) / 2, (screenSize.height - 700) / 2,
-				1000, 600);
+				800, 600);
 	}  
 
 	/**
@@ -136,20 +136,23 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
         chart.setBackgroundPaint(Color.white);
 
         constellationPlot = chart.getXYPlot();
-        constellationPlot.setBackgroundPaint(Color.black);
+        constellationPlot.setBackgroundPaint(Color.WHITE);
         constellationPlot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
-        constellationPlot.setDomainGridlinePaint(Color.white);
-        constellationPlot.setRangeGridlinePaint(Color.white);
+//        constellationPlot.setDomainGridlinePaint(Color.BLACK);
+//        constellationPlot.setRangeGridlinePaint(Color.BLACK);
+        constellationPlot.setRangeZeroBaselineVisible(true);
+        constellationPlot.setDomainZeroBaselineVisible(true);
+        constellationPlot.setRangeZeroBaselinePaint(Color.BLACK);
 
         LegendTitle legend = chart.getLegend();
-        legend.setBackgroundPaint(Color.black);
+        legend.setBackgroundPaint(Color.WHITE);
         legend.setItemFont(new Font("Times New Roman", Font.PLAIN, 16));
-        legend.setItemPaint(Color.white);
+        legend.setItemPaint(Color.BLACK);
 
         NumberAxis rangeAxis = (NumberAxis) constellationPlot.getRangeAxis();
-        rangeAxis.setRange(-1, +1);
+        rangeAxis.setRange(-1.5, +1.5);
         NumberAxis domainAxis = (NumberAxis) constellationPlot.getDomainAxis();
-        domainAxis.setRange(-1.0, 1.0);
+        domainAxis.setRange(-1.5, 1.5);
         
         //分别设置渲染效果
         XYDotRenderer rendererZero = new XYDotRenderer();
@@ -160,7 +163,7 @@ public class ConstellationDisplay  extends javax.swing.JDialog {
         
         XYDotRenderer rendererFir = new XYDotRenderer();
         constellationPlot.setRenderer(1, rendererFir);
-        rendererFir.setSeriesPaint(0, Color.YELLOW);
+        rendererFir.setSeriesPaint(0, Color.BLUE);
         rendererFir.setDotWidth(3);
         rendererFir.setDotHeight(3);       
         

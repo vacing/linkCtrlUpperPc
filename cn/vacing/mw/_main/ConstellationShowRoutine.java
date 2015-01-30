@@ -70,7 +70,7 @@ public class ConstellationShowRoutine extends UdpDataConsumer {
 //					}	
 //					outC.close();
 				
-				constellationDisplay.drawConstellation(ConstellationDisplay.BEFORE, dataShow);
+				constellationDisplay.drawConstellation(ConstellationDisplay.AFTER, dataShow);
 			}
 		}
 		
