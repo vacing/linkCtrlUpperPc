@@ -10,22 +10,27 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 
 
 /**
- * 位于主界面左侧，显示链路状态界面
+ * 位于主界面左侧，显示链路状态及操作记录界面
  * @author Gavin
  *
  */
 public class LinkStatPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	public void stateChange(int row, int column, String newState) {
-		model.setValueAt(newState, row, column);
-		operateRecord.append((recordNum++) + " - " + model.getValueAt(row, 0) + " -> " + newState + "\n");
+	public void stateChange(final int row, final int column, final String newState) {
+		SwingUtilities.invokeLater(new Runnable() {	//利用线程机制触发控件的状态变化
+			public void run(){
+				model.setValueAt(newState, row, column);
+				operateRecord.append((recordNum++) + " - " + model.getValueAt(row, 0) + " -> " + newState + "\n");
+			}	
+		});
 	}
 
 	public LinkStatPanel()
