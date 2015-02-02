@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.vacing.mw.exception.DataLenUnproperException;
+import cn.vacing.mw.exception.NumInputOutOfBounds;
 
 public class DataConvert {
 	/**
@@ -153,7 +154,43 @@ public class DataConvert {
 	}
 
 	/**
-	 * convert complex array to power array, 第一个一维数组表示横坐标，第二个一维数组表示纵坐标
+	 * convert complex array to power array, 以db为单位, 第一个一维数组表示横坐标，第二个一维数组表示纵坐标
+	 * 
+	 * @param c
+	 *            : complex array
+	 * @return
+	 * @throws NumInputOutOfBounds 
+	 */
+	public static double[][] complexArr2PowerDBArr(Complex[] c) throws NumInputOutOfBounds {
+		double[][] doubleArr = new double[2][c.length];
+		
+		Complex nonZero = new Complex(0, 0);
+		for(int i = 0; i < c.length; i++) {
+			if(c[i].abs() > Double.MIN_VALUE) {
+				nonZero = c[i];
+				break;
+			}
+		}
+		if(nonZero.abs() < Double.MIN_VALUE) {	//输入全0，无法求dbm
+			throw new NumInputOutOfBounds("Input data are all zero, can't get their db value!!");
+		}
+
+		double dbDefault = 20 * Math.log10(nonZero.abs());	
+		for (int i = 0; i < c.length; i++) {
+			doubleArr[0][i] = i;
+			doubleArr[1][i] = 20 * Math.log10(c[i].abs());	
+			if(Double.isInfinite(doubleArr[1][i])) {	//可能c[i].abs()=0，造成功率的对数为负无穷
+				if(i > 0)
+					doubleArr[1][i] = doubleArr[1][i-1];
+				else
+					doubleArr[1][0] = dbDefault;
+			}
+		}
+		return doubleArr;
+	}
+
+	/**
+	 * convert complex array to power array，直接以功率为单位，不做db的转换， 第一个一维数组表示横坐标，第二个一维数组表示纵坐标
 	 * 
 	 * @param c
 	 *            : complex array
@@ -163,12 +200,12 @@ public class DataConvert {
 		double[][] doubleArr = new double[2][c.length];
 		for (int i = 0; i < c.length; i++) {
 			doubleArr[0][i] = i;
-			doubleArr[1][i] = 20 * Math.log10(c[i].abs());
+			doubleArr[1][i] = Math.pow(c[i].abs(), 2);	
 		}
-
 		return doubleArr;
 	}
-
+	
+	
 	/**
 	 * 使用滑动窗进行平滑,长度为10
 	 */
@@ -191,7 +228,7 @@ public class DataConvert {
 	}
 	
 	/**
-	 * 数据长度截取为1024
+	 * 数据长度截取为指定长度
 	 */
 	public static ArrayList<Complex> trim2Size(ArrayList<Complex> lc, int size) {
 		ArrayList<Complex> listTemp = new ArrayList<Complex>(size);
@@ -227,4 +264,25 @@ public class DataConvert {
 		}
 	}
 
+	/**
+	 * 获取数组的平均值
+	 * @param dArr
+	 * @return
+	 */
+	public static double getMean(double[] dArr) {
+		double mean = 0;
+		for(int i = 0; i < dArr.length; i++) {
+			mean += dArr[i];
+		}
+		return mean / dArr.length;
+	}
+	
+	/**
+	 * 获取给定值指定的dbm数
+	 * @param value
+	 * @return
+	 */
+	public static double getDBValue(double value) {
+		return 10 * Math.log10(value);
+	}
 }
