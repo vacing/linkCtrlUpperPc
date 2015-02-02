@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import cn.vacing.mw.exception.DataLenUnproperException;
+import cn.vacing.mw.exception.NumInputOutOfBounds;
 import cn.vacing.mw.perfomace_gui.SpectrumDisplay;
 import cn.vacing.mw.threads.UdpDataConsumer;
 import cn.vacing.mw.tools.Complex;
@@ -59,24 +62,23 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.double2Complex(tempDouble));
 				complexList.addAll(tempComplex);
 
-				if(currentBagNo == BAGS - 1) {
+				if(currentBagNo == BAGS - 1) {//收集了足够的包数的数据
 					if(complexList.size() >= SPECTRUM_LEN) {
 						complexList = DataConvert.trim2Size(complexList, SPECTRUM_LEN);
+						double[][] power = DataConvert.complexArr2PowerArr(complexList.toArray(complexArr));
+						double powerDBm = DataConvert.getDBValue(DataConvert.getMean(power[1]));
+						spectrumDisplay.showAvgPowerBefore(powerDBm);
 						Complex[] fftResult = FFT.fft(complexList.toArray(complexArr));
 						arrMirror(fftResult);	// 将频谱的(pi -> 2*pi)的部分折叠到(-pi -> 0)
-						double[][] power = DataConvert.complexArr2PowerArr(fftResult);
-						
-//							//output data, simulate in matlab
-//							PrintWriter outC;
-//							outC = new PrintWriter(new BufferedWriter(new FileWriter("power_before.txt")));
-//							for(double d: power[1]) {
-//								outC.println(d);
-//							}	
-//							outC.close();
-						
-						spectrumDisplay.showAvgPowerBefore(getMean(power[1]));
-						DataConvert.smoothLine(power[1], 5);//曲线滑动平滑
-						spectrumDisplay.drawSpectrum(SpectrumDisplay.BEFORE, power);
+						double[][] powerDBmLine;
+						try {
+							powerDBmLine = DataConvert.complexArr2PowerDBArr(fftResult);
+							DataConvert.smoothLine(powerDBmLine[1], 5);//曲线滑动平滑
+							spectrumDisplay.drawSpectrum(SpectrumDisplay.BEFORE, powerDBmLine);
+						} catch (NumInputOutOfBounds e) {
+							// TODO Auto-generated catch block
+							JOptionPane.showConfirmDialog(null, e.getMessage());
+						}
 					}
 				}
 				break;
@@ -86,24 +88,23 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 				List<Complex> tempComplex = Arrays.<Complex>asList(DataConvert.double2Complex(tempDouble));
 				complexList.addAll(tempComplex);
 //				System.out.println("complexList: " + complexList.size());
-				if(currentBagNo == 2 * BAGS - 1) {
-					complexList = DataConvert.trim2Size(complexList, SPECTRUM_LEN);
-					if(complexList.size() == SPECTRUM_LEN) {
+				if(currentBagNo == 2 * BAGS - 1) {//收集了足够的包数的数据
+					if(complexList.size() >= SPECTRUM_LEN) {	
+						complexList = DataConvert.trim2Size(complexList, SPECTRUM_LEN);
+						double[][] power = DataConvert.complexArr2PowerArr(complexList.toArray(complexArr));
+						double powerDBm = DataConvert.getDBValue(DataConvert.getMean(power[1]));
+						spectrumDisplay.showAvgPowerAfter(powerDBm);
 						Complex[] fftResult = FFT.fft(complexList.toArray(complexArr));
 						arrMirror(fftResult);	// 将频谱的(pi -> 2*pi)的部分折叠到(-pi -> 0)
-						double[][] power = DataConvert.complexArr2PowerArr(fftResult);
-						
-						
-//							//output data, simulate in matlab
-//							PrintWriter outC = new PrintWriter(new BufferedWriter(new FileWriter("power_after.txt")));
-//							for(double d: power[1]) {
-//								outC.println(d);
-//							}	
-//							outC.close();
-						
-						spectrumDisplay.showAvgPowerAfter(getMean(power[1]));
-						DataConvert.smoothLine(power[1], 5);//曲线滑动平滑
-						spectrumDisplay.drawSpectrum(SpectrumDisplay.AFTER, power);
+						double[][] powerDBmLine;
+						try {
+							powerDBmLine = DataConvert.complexArr2PowerDBArr(fftResult);
+							DataConvert.smoothLine(powerDBmLine[1], 5);//曲线滑动平滑
+							spectrumDisplay.drawSpectrum(SpectrumDisplay.AFTER, powerDBmLine);
+						} catch (NumInputOutOfBounds e) {
+							// TODO Auto-generated catch block
+							JOptionPane.showConfirmDialog(null, e.getMessage());
+						}
 					}
 				}
 				break;
@@ -133,17 +134,6 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 			}
 			oArr[i] = oTemp[i - center];
 		}
-	}
-	
-	/**
-	 * 获取平均功率值
-	 */
-	private double getMean(double[] dArr) {
-		double mean = 0;
-		for(int i = 0; i < dArr.length; i++) {
-			mean += dArr[i];
-		}
-		return mean / dArr.length;
 	}
 	
 	/**
