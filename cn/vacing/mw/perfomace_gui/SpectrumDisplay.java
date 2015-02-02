@@ -163,7 +163,7 @@ public class SpectrumDisplay  extends javax.swing.JFrame {
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "Spectrum Graph",			//title
                 "Frequency (KHz)",			//xlabel
-                "Power",					//ylabel
+                "Power(DB)",					//ylabel
                 null,						//data
                 PlotOrientation.VERTICAL,	//
                 true,						//显示图例
@@ -287,7 +287,7 @@ public class SpectrumDisplay  extends javax.swing.JFrame {
         jpnlSpectrumSouth.add(jtfPowerBefore, gridBagConstraints);
         //抵消前功率的单位显示
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel2.setText("dBm");
+        jLabel2.setText("dB");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -321,7 +321,7 @@ public class SpectrumDisplay  extends javax.swing.JFrame {
         jpnlSpectrumSouth.add(jLabel3, gridBagConstraints);
         //抵消后功率的单位显示
         jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel4.setText("dBm");
+        jLabel4.setText("dB");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 0;
@@ -394,7 +394,7 @@ public class SpectrumDisplay  extends javax.swing.JFrame {
         jpnlSpectrumSouth.add(jtfPowerNoise, gbc_jtfPowerNoise);
         //噪声功率单位显示
         JLabel label_1 = new JLabel();
-        label_1.setText("dBm");
+        label_1.setText("dB");
         label_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
         GridBagConstraints gbc_label_1 = new GridBagConstraints();
         gbc_label_1.insets = new Insets(0, 5, 5, 5);
