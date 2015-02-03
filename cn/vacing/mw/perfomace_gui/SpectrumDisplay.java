@@ -13,6 +13,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -102,24 +103,29 @@ public class SpectrumDisplay  extends javax.swing.JFrame {
 	 * legend-曲线名称
 	 * powerDateset-曲线数据集，为二维数组，第一个一维数组表示横坐标，第二个一维数组表示纵坐标。
 	 */
-    public void drawSpectrum(String legend, double[][] powerDataset) {
+    public void drawSpectrum(final String legend, final double[][] powerDataset) {
     	synchronized(objLock) {
-	    	double[][] powerCopy = powerDataset.clone();//数据拷贝到本地显示
-	    	XYSeries xys = new XYSeries(legend);
-	    	for(int i = 0; i< powerCopy[0].length; i++){
-	    		xys.add(powerCopy[0][i], powerCopy[1][i]);
-	    	}
-	    	XYSeriesCollection xysc = new XYSeriesCollection(xys);
-	    	
-	        if (BEFORE.equals(legend)) {
-	            spectrumPlot.setDataset(0, xysc);
-	        } else if (NOISE.equals(legend)) {
-	        	spectrumPlot.setDataset(2, xysc);
-			} else if (AFTER.equals(legend)){
-	            spectrumPlot.setDataset(1, xysc);
-	        } else {
-	        	System.out.println("Series legend is error");
-	        }
+    		SwingUtilities.invokeLater(new Runnable() { 
+				@Override
+				public void run() {
+			    	double[][] powerCopy = powerDataset.clone();//数据拷贝到本地显示
+			    	XYSeries xys = new XYSeries(legend);
+			    	for(int i = 0; i< powerCopy[0].length; i++){
+			    		xys.add(powerCopy[0][i], powerCopy[1][i]);
+			    	}
+			    	XYSeriesCollection xysc = new XYSeriesCollection(xys);
+			    	
+			        if (BEFORE.equals(legend)) {
+			            spectrumPlot.setDataset(0, xysc);
+			        } else if (NOISE.equals(legend)) {
+			        	spectrumPlot.setDataset(2, xysc);
+					} else if (AFTER.equals(legend)){
+			            spectrumPlot.setDataset(1, xysc);
+			        } else {
+			        	System.out.println("Series legend is error");
+			        }					
+				}
+    		});
     	}
     }
 

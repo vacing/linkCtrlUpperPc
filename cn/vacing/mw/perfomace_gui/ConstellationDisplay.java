@@ -11,6 +11,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.jfree.chart.ChartFactory;
@@ -100,22 +101,27 @@ public class ConstellationDisplay  extends javax.swing.JFrame {
 	 * 更新星座图样点。
 	 * 二维数组中，第一个一维数组表示横坐标集合，第二个一维数组表示每个横坐标对应的纵坐标。
 	 */
-    public void drawConstellation(String legend, double[][] constellationDataset) {
-    	synchronized(objLock) {									//Synchronized method
-    		double[][] constCopy = constellationDataset.clone();//数据拷贝到本地显示
-        	XYSeries xys = new XYSeries(legend);
-        	for(int i = 0; i< constCopy[0].length; i++){
-        		xys.add(constCopy[0][i], constCopy[1][i]);
-        	}
-        	XYSeriesCollection xysc = new XYSeriesCollection(xys);
-        	
-            if (BEFORE.equals(legend)) {
-            	constellationPlot.setDataset(0, xysc);
-            } else if (AFTER.equals(legend)) {
-            	constellationPlot.setDataset(1, xysc);
-            } else {
-            	System.out.println("Series legend is error");
-            }
+    public void drawConstellation(final String legend, final double[][] constellationDataset) {
+    	synchronized(objLock) {			
+    		SwingUtilities.invokeLater(new Runnable() { 
+				@Override
+				public void run() {//Synchronized method
+		    		double[][] constCopy = constellationDataset.clone();//数据拷贝到本地显示
+		        	XYSeries xys = new XYSeries(legend);
+		        	for(int i = 0; i< constCopy[0].length; i++){
+		        		xys.add(constCopy[0][i], constCopy[1][i]);
+		        	}
+		        	XYSeriesCollection xysc = new XYSeriesCollection(xys);
+		        	
+		            if (BEFORE.equals(legend)) {
+		            	constellationPlot.setDataset(0, xysc);
+		            } else if (AFTER.equals(legend)) {
+		            	constellationPlot.setDataset(1, xysc);
+		            } else {
+		            	System.out.println("Series legend is error");
+		            }
+				}
+    		});
     	}
     }
     
