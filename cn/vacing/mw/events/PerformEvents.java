@@ -116,7 +116,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 			public void run() {
 				synchronized (showSpectrum) {
 					if(showSpectrum) {	//频谱显示
-						if(future == null || future.isDone()) {	//首次进入，或UDP未阻塞
+						if(futureSpectrum == null || futureSpectrum.isDone()) {	//首次进入，或UDP未阻塞
 	//						showSpectrum = false;
 							System.out.println("Timer works" + 
 												"\tIP:" + mainFrame.getFpga1Ip()
@@ -125,15 +125,15 @@ public class PerformEvents implements ActionListener, WindowListener {
 									MainThread.PORT_2,
 									ButtonCommand.CANCE_PERFORM_START.s2fpga, 
 									new SpectrumShowRoutine(spectrumDisplay));
-							future = urt.submitThread(gud);	
+							futureSpectrum = urt.submitThread(gud);	
 						} else {
-							System.out.println("\nThread is Undone!!");
+							System.out.println("\nSpectrum Thread is Undone!!");
 						}
 					}
 				}
 				synchronized (showConstellation) {
 					if(showConstellation) {	//星座图显示
-						if(future == null || future.isDone()) {		//首次进入，或UDP未阻塞
+						if(futureConstellation == null || futureConstellation.isDone()) {		//首次进入，或UDP未阻塞
 	//						showConstellation = false;
 							System.out.println("Timer works" + 
 									"\tIP:" + mainFrame.getFpga1Ip()
@@ -142,9 +142,9 @@ public class PerformEvents implements ActionListener, WindowListener {
 									MainThread.PORT_2,
 									ButtonCommand.CONSTELLATION_START.s2fpga, 
 									consShowRoutine);
-							future = urt.submitThread(gud);	
+							futureConstellation = urt.submitThread(gud);	
 						} else {
-							System.out.println("\nThread is Undone!!");
+							System.out.println("\nConstellation Thread is Undone!!");
 						}
 					}
 				}
@@ -162,7 +162,8 @@ public class PerformEvents implements ActionListener, WindowListener {
 	private TimerTask spectrumTimerTask;
 	private volatile Boolean showSpectrum = false;
 	private volatile Boolean showConstellation = false;
-	private Future<Integer> future;
+	private Future<Integer> futureSpectrum;
+	private Future<Integer> futureConstellation;
 	
 	@Override
 	public void windowOpened(WindowEvent e) {
