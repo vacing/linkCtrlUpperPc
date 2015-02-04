@@ -18,12 +18,12 @@ public class DigitCanceEvents {
 	public void diCanceResetStart() {
 		mf.diCanceResetStart();
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				ButtonCommand.DI_CANCE_RESET_START.s2fpga));
 	}
 	public void diCanceResetStop() {
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				ButtonCommand.DI_CANCE_RESET_STOP.s2fpga));
 		mf.diCanceResetStop();	
 	}
@@ -33,13 +33,13 @@ public class DigitCanceEvents {
 	 */
 	public void paramUpdateStart() {
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				ButtonCommand.DI_PARAM_UP_START.s2fpga));
 		mf.diParamUpdateStart();
 	}
 	public void paramUpdateStop() {
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				ButtonCommand.DI_PARAM_UP_STOP.s2fpga));
 		mf.diParamUpdateStop();
 	}
@@ -50,7 +50,7 @@ public class DigitCanceEvents {
 	private static int dirCurrState = ButtonCommand.DIR_CURR_CORRECT.s2fpga;
 	public void dirCurrCorr() {
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				dirCurrState));
 		mf.diDirCurrCorr();
 		/**
@@ -82,7 +82,7 @@ public class DigitCanceEvents {
 			return;
 		}
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				(ButtonCommand.DI_RECE_TIME_DELAY.s2fpga | num)));
 	}
 
@@ -102,7 +102,7 @@ public class DigitCanceEvents {
 			return;
 		}
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				(ButtonCommand.DI_FEEDBACK_TIME_DELAY.s2fpga | num)));
 	}
 	
@@ -122,7 +122,7 @@ public class DigitCanceEvents {
 			return;
 		}
 		urt.submitThread(urt.getSendCommandThread(
-				mf.getFpga0Ip(), MainThread.PORT_2,
+				mf.getFpga1Ip(), MainThread.PORT_2,
 				(ButtonCommand.DI_CATCH_LENGTH.s2fpga | num)));
 	}
 	
