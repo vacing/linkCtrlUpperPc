@@ -76,8 +76,8 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 							DataConvert.smoothLine(powerDBmLine[1], 5);//曲线滑动平滑
 							spectrumDisplay.drawSpectrum(SpectrumDisplay.BEFORE, powerDBmLine);
 						} catch (NumInputOutOfBounds e) {
-							// TODO Auto-generated catch block
-							JOptionPane.showConfirmDialog(null, e.getMessage());
+							/*do nothing */
+							return;
 						}
 					}
 				}
@@ -101,9 +101,9 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 							powerDBmLine = DataConvert.complexArr2PowerDBArr(fftResult);
 							DataConvert.smoothLine(powerDBmLine[1], 5);//曲线滑动平滑
 							spectrumDisplay.drawSpectrum(SpectrumDisplay.AFTER, powerDBmLine);
-						} catch (NumInputOutOfBounds e) {
-							// TODO Auto-generated catch block
-							JOptionPane.showConfirmDialog(null, e.getMessage());
+						} catch (NumInputOutOfBounds e) {	
+							/*do nothing */
+							return;
 						}
 					}
 				}
