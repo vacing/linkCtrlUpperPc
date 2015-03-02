@@ -35,8 +35,8 @@ public class MainThread {
 			mfBe.init(mf, us, urt);	//finish the init of be
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(mf, "Udp 打开失败，请检查本地IP及端口设置！！");
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(mf, "Udp 打开失败，请确保只打开一个程序实例，\n并检查本地IP及端口设置！！");
+			System.exit(1);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,7 +46,7 @@ public class MainThread {
 	/**
 	 * channel 0 对应端口，fpga上传命令，与pc下发数据
 	 */
-	public static final int PORT_1 = 6001;
+//	public static final int PORT_1 = 6001;
 	/**
 	 * channel 1 对应端口，fpga上传数据，与pc下发命令
 	 */
