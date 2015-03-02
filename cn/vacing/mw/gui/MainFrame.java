@@ -56,30 +56,57 @@ public class MainFrame extends JFrame {
 		return gcp.diCanceCtrPanel.catchLengthConf();
 	}
 	//--------------------------------数字干扰抵消-----------------------------------	
+	//--------------------------------  链路控制  -----------------------------------  
 	
+	/**
+	 * 获要配置到fpga0的任意数据
+	 * @return
+	 */
+	public String anyDataFpga0Conf() {
+		return gcp.linkCtrlPanel.anyDataFpga0Conf();
+	}
+	/**
+	 * 获要配置到fpga1的任意数据
+	 * @return
+	 */
+	public String anyDataFpga1Conf() {
+		return gcp.linkCtrlPanel.anyDataFpga1Conf();
+	}
 	/**
 	 * 频域平滑段数配置
 	 */
-	public void freqAverSegsConf()	{
-		
+	public String smoothSegsConf()	{
+		return gcp.linkCtrlPanel.smoothSegsConf();
 	}
 	
+	/**
+	 * 链路复位
+	 */
+	public void linkResetOn() {
+		gcp.linkCtrlPanel.linkResetOn();
+	}
+	/**
+	 * 取消链路复位
+	 */
+	public void linkResetOff() {
+		gcp.linkCtrlPanel.linkResetOff();
+	}
 	/**
 	 * 时间捕获门限控制
 	 */
 	public void timeSynGateConfig() {
-		String timeSynGate = gcp.getTimeSynGate();
+		String timeSynGate = gcp.linkCtrlPanel.getTimeSynGate();
 		lsp.stateChange(LinkStatParam.TIME_SYN_GATE, 1, timeSynGate);
 	}
 	/**
 	 * 打开AD1
 	 */
 	public void openAD1() {
-		gcp.openAD1();
+		gcp.linkCtrlPanel.openAD1();
 		lsp.stateChange(LinkStatParam.AD1, 1, "打开");
 	}
 	public void closeAD1() {
-		gcp.closeAD1();
+		gcp.linkCtrlPanel.closeAD1();
 		lsp.stateChange(LinkStatParam.AD1, 1, "关闭");
 	}
 
@@ -87,38 +114,38 @@ public class MainFrame extends JFrame {
 	 * 打开AD2
 	 */
 	public void openAD2() {
-		gcp.openAD2();
+		gcp.linkCtrlPanel.openAD2();
 		lsp.stateChange(LinkStatParam.AD2, 1, "打开");
 	}
 
 	public void closeAD2() {
-		gcp.closeAD2();
+		gcp.linkCtrlPanel.closeAD2();
 		lsp.stateChange(LinkStatParam.AD2, 1, "关闭");
 	}
 
 	/**
-	 * 打开DA1
+	 * 打开DA
 	 */
-	public void openDA1() {
-		gcp.openDA1();
+	public void openDA() {
+		gcp.linkCtrlPanel.openDA();
 		lsp.stateChange(LinkStatParam.DA1, 1, "打开");
 	}
-	public void closeDA1() {
-		gcp.closeDA1();
+	/**
+	 * 关闭DA
+	 */
+	public void closeDA() {
+		gcp.linkCtrlPanel.closeDA();
 		lsp.stateChange(LinkStatParam.DA1, 1, "关闭");
 	}
-
+	
 	/**
-	 * 打开DA2
+	 * 获取配置的发射中频
+	 * @return
 	 */
-	public void openDA2() {
-		gcp.openDA2();
-		lsp.stateChange(LinkStatParam.DA2, 1, "打开");
+	public String emitCentFreqConf() {
+		return gcp.linkCtrlPanel.emitCentFreqConf();
 	}
-	public void closeDA2() {
-		gcp.closeDA2();
-		lsp.stateChange(LinkStatParam.DA2, 1, "关闭");
-	}
+	//--------------------------------  链路控制  -----------------------------------  
 
 	/**
 	 * 获取设定fpga1和2的IP地址

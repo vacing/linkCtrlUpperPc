@@ -7,7 +7,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import cn.vacing.mw._main.ButtonCommand;
-import cn.vacing.mw._main.FinalVar;
 
 
 /**
@@ -20,7 +19,7 @@ public class GlobalControlPanel extends JPanel{
 	{
 		this.buttonEvents = buttonEvents;
 		setLayout(new GridLayout(0, 2, 10, 10));
-		linkCtrlPanel = linkCtrlPanelInit();
+		linkCtrlPanel = new LinkCtrlPanel(buttonEvents);
 		performanceShowPanel = performanceShowPanelInit();
 		diCanceCtrPanel = new DiCanceCtrlPanel(buttonEvents);
 		rfCanceCtrPanel = rfCanceCtrPanelInit();
@@ -28,231 +27,6 @@ public class GlobalControlPanel extends JPanel{
 		add(performanceShowPanel);
 		add(diCanceCtrPanel);
 		add(rfCanceCtrPanel);
-	}
-	
-	
-	/**
-	 * 返回timeSynGate的值
-	 */
-	public String getTimeSynGate() {
-		return timeSynGate.getText();
-	}
-	/**
-	 * 打开AD1
-	 */
-	public void openAD1()
-	{
-		ad1Ctrl.setText("关AD1");
-		ad1Ctrl.setActionCommand(FinalVar.AD1_CLOSE);
-	}
-	/**
-	 * 关闭AD1
-	 */
-	public void closeAD1()
-	{
-		ad1Ctrl.setText("开AD1");
-		ad1Ctrl.setActionCommand(FinalVar.AD1_OPEN);
-	}
-	/**
-	 * 打开AD2
-	 */
-	public void openAD2()
-	{
-		ad2Ctrl.setText("关AD2");
-		ad2Ctrl.setActionCommand(FinalVar.AD2_CLOSE);
-	}
-	/**
-	 * 关闭AD2
-	 */
-	public void closeAD2()
-	{
-		ad2Ctrl.setText("开AD2");
-		ad2Ctrl.setActionCommand(FinalVar.AD2_OPEN);
-	}
-	
-	/**
-	 * 打开DA1
-	 */
-	public void openDA1()
-	{
-		da1Ctrl.setText("关DA1");
-		da1Ctrl.setActionCommand(FinalVar.DA1_CLOSE);
-	}
-	/**
-	 * 关闭DA1
-	 */
-	public void closeDA1()
-	{
-		da1Ctrl.setText("开DA1");
-		da1Ctrl.setActionCommand(FinalVar.DA1_OPEN);
-	}
-	/**
-	 * 打开DA2
-	 */
-	public void openDA2()
-	{
-		da2Ctrl.setText("关DA2");
-		da2Ctrl.setActionCommand(FinalVar.DA2_CLOSE);
-	}
-	/**
-	 * 关闭DA2
-	 */
-	public void closeDA2()
-	{
-		da2Ctrl.setText("开DA2");
-		da2Ctrl.setActionCommand(FinalVar.DA2_OPEN);
-	}
-	
-	
-	/**
-	 * 链路控制
-	 */
-	private JPanel linkCtrlPanelInit() {
-		JPanel linkCtrlPanel = new JPanel();
-		linkCtrlPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		Border borderTemp = BorderFactory.createEtchedBorder();
-		Border titledBorder = BorderFactory.createTitledBorder(borderTemp, "链路控制");
-		linkCtrlPanel.setBorder(titledBorder);
-		
-		baseCtrlPanel = baseCtrlPanelInit();
-		linkCtrlPanel.add(baseCtrlPanel);
-		
-		rfCtrlPanel = rfCtrlPanelInit();
-		linkCtrlPanel.add(rfCtrlPanel);
-		
-		return linkCtrlPanel;
-	}
-	
-	/**
-	 * 链路控制之射频控制
-	 */
-	private JPanel rfCtrlPanelInit() {
-		JPanel rfCtrlPanel = new JPanel();
-		rfCtrlPanel.setLayout(new GridBagLayout());
-		Border borderTemp = BorderFactory.createEtchedBorder();
-		rfCtrlPanel.setBorder(borderTemp);
-		
-		GridBagConstraints gbc;
-		
-		rfBoardCtr = new JButton("射频板控制");
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0; 
-		gbc.gridy = 0;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		rfBoardCtr.setActionCommand(FinalVar.RF_BOARD_CTR);
-		rfBoardCtr.addActionListener(buttonEvents);
-		rfCtrlPanel.add(rfBoardCtr, gbc);
-		
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 0; 
-		gbc.gridy = 1;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-		gbc.weighty = 0.5;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridwidth = 2;
-		rfCtrlPanel.add(new JLabel(), gbc);
-		
-		gbc = new GridBagConstraints();
-		gbc.gridx = 1; 
-		gbc.gridy = 0;
-//		gbc.ipadx = 5;
-//		gbc.ipady = 5;
-//		gbc.insets = new Insets(10, 10, 10, 10);
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.5;
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridheight = 3;
-		rfCtrlPanel.add(new JLabel(), gbc);
-		
-		return rfCtrlPanel;
-	}
-	
-	/**
-	 * 链路控制之基带控制
-	 */
-	private JPanel baseCtrlPanelInit()
-	{
-		JPanel baseCtrlPanel = new JPanel();
-		baseCtrlPanel.setLayout(new GridLayout(0, 3, 5, 5));
-		Border borderTemp = BorderFactory.createEtchedBorder();
-		baseCtrlPanel.setBorder(borderTemp);
-	
-		ad1Ctrl = new JButton("开AD1");
-		ad1Ctrl.setActionCommand(FinalVar.AD1_OPEN);
-		ad1Ctrl.addActionListener(buttonEvents);
-		
-		ad2Ctrl = new JButton("开AD2");
-		ad2Ctrl.setActionCommand(FinalVar.AD2_OPEN);
-		ad2Ctrl.addActionListener(buttonEvents);
-		
-		da1Ctrl = new JButton("开DA1");
-		da1Ctrl.setActionCommand(FinalVar.DA1_OPEN);
-		da1Ctrl.addActionListener(buttonEvents);
-		
-		da2Ctrl = new JButton("开DA2");
-		da2Ctrl.setActionCommand(FinalVar.DA2_OPEN);
-		da2Ctrl.addActionListener(buttonEvents);
-		
-		JLabel timeSynGateLabe = new JLabel("时间捕获：");
-		timeSynGate = new JTextField();
-		timeSynGateCtr = new JButton("配置");
-		timeSynGateCtr.setActionCommand(FinalVar.TIME_SYN_CONFIG);
-		timeSynGateCtr.addActionListener(buttonEvents);
-		
-		JLabel osciStepLabe = new JLabel("晶振步进:");
-		osciStep = new JTextField();
-		osciStepCtr = new JButton("配置");
-
-		//row 1
-		baseCtrlPanel.add(ad1Ctrl);
-		baseCtrlPanel.add(ad2Ctrl);
-		baseCtrlPanel.add(new JLabel());
-		//row 2
-		baseCtrlPanel.add(da1Ctrl);
-		baseCtrlPanel.add(da2Ctrl);
-		baseCtrlPanel.add(new JLabel());
-		//row 3
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		//row 4
-		baseCtrlPanel.add(osciStepLabe);
-		baseCtrlPanel.add(osciStep);
-		baseCtrlPanel.add(osciStepCtr);
-		//row 5
-		baseCtrlPanel.add(timeSynGateLabe);
-		baseCtrlPanel.add(timeSynGate);
-		baseCtrlPanel.add(timeSynGateCtr);
-		//row 6
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		//row 7
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		//row 8
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		//row 9
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		//row 10
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		baseCtrlPanel.add(new JLabel());
-		
-		return baseCtrlPanel;
 	}
 	
 	private JPanel rfCanceCtrPanelInit()
@@ -469,38 +243,18 @@ public class GlobalControlPanel extends JPanel{
 	}
 
 	//4 parts of this panel
-	public final JPanel linkCtrlPanel;
+	public final LinkCtrlPanel linkCtrlPanel;
 	public final JPanel performanceShowPanel;	
 	public final DiCanceCtrlPanel diCanceCtrPanel;
 	public final JPanel rfCanceCtrPanel;
-
+	
 	//全部按钮事件
 	private ActionListener buttonEvents;
-	
-	//链路控制-基带控制面板
-	private JPanel baseCtrlPanel;
-	private JButton ad1Ctrl;	//AD1控制
-	private JButton ad2Ctrl;	//AD2控制
-	private JButton da1Ctrl;	//DA1控制
-	private JButton da2Ctrl;	//DA2控制
-//	private JButton channelEstimationParam;	//信道估计参数
-	private JButton osciStepCtr;			//晶振步进控制
-	private JTextField osciStep;			//晶振步进
-	private JTextField timeSynGate;			//时间捕获门限
-	private JButton timeSynGateCtr;			//时间捕获门限控制
-	
-	//链路控制-射频控制面板
-	private JPanel rfCtrlPanel;
-	private JButton rfBoardCtr;
-	
 	
 	//性能展示面板
 	private JButton showCancePerformace;
 	private JButton showConstellation;
 	private JTextField blockErrorRate;
-	
-
-	
 	
 	//射频干扰抵消面板
 	//射频抵消-初始参数

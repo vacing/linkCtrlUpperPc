@@ -6,17 +6,21 @@ public enum ButtonCommand {
 	LOG_IN_CONFIRM			("loginConfrim",		0),					//登陆按钮
 	
 	//link control
-//	AD1_OPEN				("")
-//	AD1_CLOSE				("")
-//	AD2_OPEN				("")
-//	AD2_CLOSE				("")
-//	DA1_CLOSE				("")
-//	DA2_OPEN				("")
-//	DA2_CLOSE				("")
-//	TIME_SYN_CONFIG			("")
-//	OSCI_STEP_CONFIG		("")
-//	RF_BOARD_CTR			("")
-	
+	AD1_OPEN				("AD1_OPEN",			0x10000000),
+	AD1_CLOSE				("AD1_CLOSE",			0x10000000),
+	AD2_OPEN				("AD2_OPEN",			0x10000000),
+	AD2_CLOSE				("AD2_CLOSE",			0x10000000),			
+	DA_OPEN					("DA_OPEN",				0x11000000),			//DA开，最低位有效
+	DA_CLOSE				("DA_CLOSE",			0x11000001),			//DA关，最低位有效
+	TIME_SYN_CONFIG			("TIME_SYN_CONFIG",		0x10000000),			//时间捕获门限配置
+	OSCI_STEP_CONFIG		("OSCI_STEP_CONFIG",	0x10000000),			//晶振步进控制
+	RF_BOARD_CTR			("RF_BOARD_CTR",		0),						//调用射频干扰抵消控制程序
+	LINK_RESET_ON			("LINK_RESET_ON",		0x13000001),			//开始复位链路，最低位有效
+	LINK_RESET_OFF			("LINK_RESET_OFF",		0x13000000),			//取消复位链路，最低位有效
+	EMIT_CENT_FREQ_CONF		("EMIT_CENT_FREQ_CONF",	0x12000000),			//发射中频配置， 低16位有效
+	SMOOTH_SEGS_CONF		("SMOOTH_SEGS_CONF",	0x10000000),			//平滑段数，低6位有效
+	FPGA0_ANY				("FPGA1_ANY",			0),						//任意32bit
+	FPGA1_ANY				("FPGA1_ANY",			0),						//任意32bit
 	
 	//digital cancellation
 	DI_CANCE_RESET_START	("diCanceResetStart", 	0X22000000),		//1b,	数字干扰抵消复位打开
