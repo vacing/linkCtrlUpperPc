@@ -27,7 +27,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 
 import cn.vacing.mw._main.ButtonCommand;
-import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw.tools.Complex;
 
 public class ConstellationDisplay  extends javax.swing.JFrame {

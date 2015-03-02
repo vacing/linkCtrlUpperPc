@@ -77,7 +77,7 @@ public class UdpRelatedThreads {
 			System.out.println("destIP:" + destIP
 					+ "\tdestPort:" + destPort
 					+ "\tcommand:"	+ Integer.toHexString(command)
-		);
+					);
 			
 			synchronized (udpSocket) {
 				udpSocket.sendUdpMesg(destIP, 					// 目标IP
