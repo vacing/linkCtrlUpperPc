@@ -198,9 +198,13 @@ public class DataConvert {
 	 */
 	public static double[][] complexArr2PowerArr(Complex[] c) {
 		double[][] doubleArr = new double[2][c.length];
+		Complex mean = getMean(c);
+//		System.out.println(mean);
 		for (int i = 0; i < c.length; i++) {
 			doubleArr[0][i] = i;
-			doubleArr[1][i] = Math.pow(c[i].abs(), 2);	
+//			System.out.println("c[i]" + c[i]);
+//			System.out.println("c[i].minus(mean)" + c[i].minus(mean));
+			doubleArr[1][i] = Math.pow((c[i].minus(mean)).abs(), 2);	//minus the direct bias	
 		}
 		return doubleArr;
 	}
@@ -275,6 +279,14 @@ public class DataConvert {
 			mean += dArr[i];
 		}
 		return mean / dArr.length;
+	}
+	public static Complex getMean(Complex[] dArr) {
+		Complex mean = new Complex(0, 0);
+		for(int i = 0; i < dArr.length; i++) {
+			mean = mean.plus(dArr[i]);
+		}
+//		System.out.println("mean1: " + mean);
+		return mean.divC(dArr.length);
 	}
 	
 	/**
