@@ -10,7 +10,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import cn.vacing.mw._main.ButtonCommand;
 import cn.vacing.mw._main.ConstellationShowRoutine;
-import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw._main.MainThread;
 import cn.vacing.mw._main.SpectrumShowRoutine;
 import cn.vacing.mw.gui.MainFrame;
@@ -117,7 +116,7 @@ public class PerformEvents implements ActionListener, WindowListener {
 				synchronized (showSpectrum) {
 					if(showSpectrum) {	//频谱显示
 						if(futureSpectrum == null || futureSpectrum.isDone()) {	//首次进入，或UDP未阻塞
-	//						showSpectrum = false;
+//							showSpectrum = false;
 							System.out.println("Timer works" + 
 												"\tIP:" + mainFrame.getFpga1Ip()
 												+"\tPort:" + MainThread.PORT_2);

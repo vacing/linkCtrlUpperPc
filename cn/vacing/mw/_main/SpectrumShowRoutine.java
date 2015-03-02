@@ -55,7 +55,7 @@ public class SpectrumShowRoutine extends UdpDataConsumer {
 //			// TODO Auto-generated catch block
 //			e1.printStackTrace();
 //		}
-		
+	
 		switch(currentBagNo / BAGS) {
 			case 0:	{//抵消前
 				double[] tempDouble = DataConvert.byteArr2DoubleArr(data, length, BYTE_CNT, FRACTION_NUM);

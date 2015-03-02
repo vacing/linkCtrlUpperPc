@@ -2,9 +2,7 @@ package cn.vacing.mw.events;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
 import cn.vacing.mw._main.ButtonCommand;
-import cn.vacing.mw._main.FinalVar;
 import cn.vacing.mw._main.MainThread;
 import cn.vacing.mw.exception.NumInputOutOfBounds;
 import cn.vacing.mw.gui.MainFrame;
@@ -72,7 +70,7 @@ public class DigitCanceEvents {
 	public void receTimeDelayConf(){
 		String numStr = mf.diReceTimeDelayConf();
 		if(! numStr.matches("[\\d]+")) {	//使用正则表达式，防止不输入数据或输入的不是数字
-			JOptionPane.showMessageDialog(mf, "请输入内容。");
+			JOptionPane.showMessageDialog(mf, "请输入正确内容。");
 			return;
 		}
 		int num = Integer.valueOf(numStr, 10);
@@ -92,7 +90,7 @@ public class DigitCanceEvents {
 	public void feedbackTimeDelayConf(){
 		String numStr = mf.diFeedbackTimeDelayConf();
 		if(! numStr.matches("[\\d]+")) {	//使用正则表达式，防止不输入数据或输入的不是数字
-			JOptionPane.showMessageDialog(mf, "请输入内容。");
+			JOptionPane.showMessageDialog(mf, "请输入正确内容。");
 			return;
 		}
 		int num = Integer.valueOf(numStr, 10);
